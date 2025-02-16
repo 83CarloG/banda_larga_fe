@@ -1,10 +1,10 @@
-import { getFooterTemplate } from "./footerTemplate.js";
-import { getFooterStyles } from "./footerStyles.js";
+import {getFooterTemplate} from "./footerTemplate.js";
+import {getFooterStyles} from "./footerStyles.js";
 
 class FooterElement extends HTMLElement {
     constructor() {
         super();
-        this.attachShadow({ mode: 'open' });
+        this.attachShadow({mode: 'open'});
     }
 
     connectedCallback() {

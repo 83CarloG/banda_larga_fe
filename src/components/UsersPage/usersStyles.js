@@ -59,6 +59,8 @@ export function getStyles() {
             .main-content {
                 padding: 16px;
             }
-        } 
+        }
+
+  
     `;
 }

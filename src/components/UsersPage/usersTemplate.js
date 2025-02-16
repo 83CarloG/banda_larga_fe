@@ -1,4 +1,3 @@
-
 export function getTemplate() {
     return `
         <div class="container">
@@ -6,7 +5,7 @@ export function getTemplate() {
             <sidebar-element></sidebar-element>
             <div class="content-wrapper">
                 <div class="main-content">
-                    <h2>Welcome to Dashboard</h2>
+                    <h2>Welcome to Users</h2>
                 </div>
                 <footer-element></footer-element>
             </div>

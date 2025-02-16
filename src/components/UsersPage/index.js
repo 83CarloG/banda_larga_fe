@@ -1,7 +1,9 @@
-import { getTemplate } from "./dashboardTemplate.js";
-import { getStyles } from "./dashboardStyles.js";
+import { getTemplate } from "./usersTemplate.js";
+import { getStyles } from "./usersStyles.js";
+import cookie from "../../modules/cookies.js";
+import router from "../../modules/router.js";
 
-class DashboardPageElement extends HTMLElement {
+class UsersPageElement extends HTMLElement {
     constructor() {
         super();
         this.attachShadow({ mode: "open" });
@@ -11,7 +13,6 @@ class DashboardPageElement extends HTMLElement {
         this.render();
     }
 
-
     render() {
         this.shadowRoot.innerHTML = `
             <style>${getStyles()}</style>
@@ -20,4 +21,4 @@ class DashboardPageElement extends HTMLElement {
     }
 }
 
-customElements.define("dashboard-page", DashboardPageElement);
+customElements.define("users-page", UsersPageElement);

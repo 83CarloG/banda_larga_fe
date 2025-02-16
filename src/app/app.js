@@ -1,16 +1,36 @@
 "use strict";
 
 const router = require('../modules/router.js');
-require('../components/Header/index.js'); // Assicura che i componenti vengano registrati
-require('../components/Footer/index.js'); // Prima di essere usati
+const routes = require('./routes.js');
+
+require('../components/Header/index.js');
+require('../components/Footer/index.js');
 require('../components/DashboardPage/index.js');
+require('../components/Sidebar/index.js');
 require('../components/LoginPage/index.js');
 
-// Define routes
-router.addRoute("/", () => document.createElement("login-page"));
-router.addRoute("/dashboard", () => document.createElement("dashboard-page"));
+class App {
+    constructor() {
+        this.initializeRouter();
+        this.setupEventListeners();
+    }
 
-// Initialize router on page load
-document.addEventListener("DOMContentLoaded", function() {
-    router.init();
-});
+    initializeRouter() {
+        // Register routes from configuration (pass the entire route object)
+        routes.forEach(route => {
+            router.addRoute(route.path, {
+                component: route.component,
+                requiresAuth: route.requiresAuth !== undefined ? route.requiresAuth : (route.auth || false)
+            });
+        });
+    }
+
+    setupEventListeners() {
+        window.addEventListener('DOMContentLoaded', () => {
+            router.init();
+        });
+    }
+}
+
+const app = new App();
+module.exports = app;
