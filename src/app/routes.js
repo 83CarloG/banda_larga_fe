@@ -43,7 +43,9 @@ const routes = [
 
     createRoute('/users', () => document.createElement('users-page'), {
         requiresAuth: true,
-        requiredRoles: ['administrator']
+        requiredPermissions: ['operators'],
+        requiredRoles: ['administrator'],
+
     }),
 
     createRoute('/reports', () => document.createElement('reports-page'), {

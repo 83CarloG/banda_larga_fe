@@ -1,130 +1,163 @@
-// modules/api.js
+// src/services/api.js
 "use strict";
 
 const axios = require('axios');
 const auth = require('./auth');
 const router = require('./router');
+const { API_CONFIG, HTTP_STATUS } = require('../utils/constants');
 
 /**
- * Default API configuration
+ * Creates request headers with authentication
  */
-const API_CONFIG = {
-    baseURL: '/api',
-    headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-    },
-    timeout: 30000 // 30 seconds
+const createHeaders = (token) => ({
+    ...API_CONFIG.HEADERS,
+    ...(token && { Authorization: token })
+});
+
+/**
+ * Request interceptor to handle authentication
+ */
+const requestInterceptor = (config) => ({
+    ...config,
+    headers: createHeaders(auth.getToken())
+});
+
+/**
+ * Response data extractor
+ */
+const extractResponseData = response => response.data;
+
+/**
+ * Error response handler
+ */
+const handleResponseError = error => {
+    const { status, data } = error.response || {};
+
+    const errorMap = {
+        [HTTP_STATUS.UNAUTHORIZED]: () => {
+            auth.clearAuth();
+            router.navigate('/');
+            throw new Error('Session expired. Please log in again.');
+        },
+        [HTTP_STATUS.FORBIDDEN]: () => {
+            throw new Error('You do not have permission to perform this action.');
+        },
+        [HTTP_STATUS.VALIDATION_ERROR]: () => {
+            throw {
+                message: data?.message || 'Validation failed',
+                errors: data?.errors || {}
+            };
+        },
+        default: () => {
+            throw new Error(data?.message || 'An unexpected error occurred');
+        }
+    };
+
+    const handler = errorMap[status] || errorMap.default;
+    return handler();
 };
 
 /**
- * Creates base axios instance
- * @returns {Object} Configured axios instance
+ * Creates configured axios instance
  */
 const createAxiosInstance = () => {
-    const instance = axios.create(API_CONFIG);
+    const instance = axios.create({
+        baseURL: API_CONFIG.BASE_URL,
+        timeout: API_CONFIG.TIMEOUT,
+        headers: API_CONFIG.HEADERS
+    });
 
-    // Request interceptor
     instance.interceptors.request.use(
-        config => {
-            const token = auth.getToken();
-            if (token) {
-                config.headers.Authorization = token;
-            }
-            return config;
-        },
+        requestInterceptor,
         error => Promise.reject(error)
     );
 
-    // Response interceptor
     instance.interceptors.response.use(
-        response => response.data,
-        error => {
-            const status = error.response?.status;
-            const data = error.response?.data;
-
-            // Handle 401 Unauthorized
-            if (status === 401) {
-                auth.clearAuth();
-                router.navigate('/');
-                throw new Error('Session expired. Please log in again.');
-            }
-
-            // Handle 403 Forbidden
-            if (status === 403) {
-                throw new Error('You do not have permission to perform this action.');
-            }
-
-            // Handle 422 Validation Error
-            if (status === 422) {
-                const message = data?.message || 'Validation failed';
-                const errors = data?.errors || {};
-                throw { message, errors };
-            }
-
-            // Handle 500 and other errors
-            throw new Error(data?.message || 'An unexpected error occurred');
-        }
+        extractResponseData,
+        handleResponseError
     );
 
     return instance;
 };
 
 /**
- * Creates API methods
- * @param {Object} axiosInstance - Configured axios instance
- * @returns {Object} API methods
+ * API operation wrapper with error handling
  */
-const createApiMethods = (axiosInstance) => ({
-    /**
-     * Login user
-     * @param {string} email
-     * @param {string} password
-     * @returns {Promise<Object>}
-     */
-    login: async (email, password) => {
-        try {
-            const response = await axiosInstance.post('/login', {
-                email,
-                password
-            });
+const withErrorHandling = (operation) => async (...args) => {
+    try {
+        return await operation(...args);
+    } catch (error) {
+        console.error('API Error:', {
+            operation: operation.name,
+            arguments: args,
+            error
+        });
+        throw error;
+    }
+};
 
-            if (response.status === 'success') {
-                auth.setAuthFromResponse(response);
-            }
+/**
+ * Validates required fields in user data
+ */
+const validateUserData = (userData, requiredFields = ['email', 'first_name', 'last_name']) => {
+    const missingFields = requiredFields.filter(field => !userData[field]);
+    if (missingFields.length > 0) {
+        throw new Error(`Missing required fields: ${missingFields.join(', ')}`);
+    }
+};
 
-            return response;
-        } catch (error) {
-            console.error('Login error:', error);
-            throw error;
+/**
+ * Creates API methods
+ */
+const createApiMethods = (instance) => ({
+    // Auth endpoints
+    login: withErrorHandling(async (email, password) => {
+        const response = await instance.post('/login', { email, password });
+        if (response.status === 'success') {
+            auth.setAuthFromResponse(response);
         }
-    },
+        return response;
+    }),
 
-    /**
-     * Logout user
-     * @returns {Promise<void>}
-     */
-    logout: async () => {
+    logout: withErrorHandling(async () => {
         try {
-            const response = await axiosInstance.post('/logout');
-
+            const response = await instance.post('/logout');
             if (response.status === 'success') {
                 auth.clearAuth();
                 router.navigate('/');
             }
-
             return response;
         } catch (error) {
-            console.error('Logout error:', error);
-            // Even if API call fails, clear auth and redirect
             auth.clearAuth();
             router.navigate('/');
             throw error;
         }
-    },
+    }),
 
+    // User endpoints
+    getUsers: withErrorHandling(async () =>
+        instance.get('/users')
+    ),
+
+    getUser: withErrorHandling(async (userId) =>
+        instance.get(`/users/${userId}`)
+    ),
+
+    createUser: withErrorHandling(async (userData) => {
+        validateUserData(userData);
+        return instance.post('/users', userData);
+    }),
+
+    updateUser: withErrorHandling(async (userId, userData) =>
+        instance.put(`/users/${userId}`, userData)
+    ),
+
+    deleteUser: withErrorHandling(async (userId) =>
+        instance.delete(`/users/${userId}`)
+    )
 });
 
-// Create and export API client instance
-const apiClient = createApiMethods(createAxiosInstance());
-module.exports = apiClient;
+// Create and export API instance
+const api = createApiMethods(createAxiosInstance());
+
+module.exports = api;
