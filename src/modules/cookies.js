@@ -1,129 +1,98 @@
+// modules/cookies.js
 "use strict";
 
 /**
- * Cookie configuration options
- * @constant
+ * Cookie configuration presets
  */
-const CookieOptions = {
-    SECURE: {
-        path: '/',
-        secure: true,
-        httpOnly: true,
-        sameSite: 'Strict',
-    },
-    SESSION: {
-        path: '/',
-        secure: true,
-        httpOnly: true,
-        sameSite: 'Strict',
-    },
+const COOKIE_OPTIONS = Object.freeze({
     AUTH: {
         path: '/',
         secure: window.location.protocol === 'https:',
-        httpOnly: true,
         sameSite: 'Lax',
-        maxAge: 30 * 60 * 1000, // 30 minutes
+        maxAge: 30 * 60 * 1000 // 30 minutes
     }
-};
+});
 
 /**
- * Registry of cookie names used in the application
- * @constant
+ * Cookie names used in the application
  */
-const CookieNames = {
+const COOKIE_NAMES = Object.freeze({
     AUTH_TOKEN: 'auth_token',
-    SESSION_ID: 'session_id',
-    LANGUAGE: 'lang',
-    THEME: 'theme'
-};
+    USER_DATA: 'user_data'
+});
 
 /**
- * Sets a cookie with security options
- * @param {string} name - Cookie name
- * @param {string} value - Cookie value
- * @param {Object} options - Cookie options
+ * Validates cookie name format
+ */
+const isValidCookieName = name =>
+    typeof name === 'string' && /^[\w-]+$/.test(name);
+
+/**
+ * Creates cookie options string
+ */
+const formatCookieOptions = options =>
+    Object.entries(options)
+        .map(([key, value]) => {
+            if (value === true) return key;
+            if (value !== false && value != null) return `${key}=${value}`;
+            return '';
+        })
+        .filter(Boolean)
+        .join('; ');
+
+/**
+ * Sets a cookie with provided name and value
  */
 const setCookie = (name, value, options = {}) => {
-    if (!name || !value) {
+    if (!name || value === undefined) {
         throw new Error('Cookie name and value are required');
     }
 
-    if (!/^[\w-]+$/.test(name)) {
-        throw new Error('Invalid cookie name');
+    if (!isValidCookieName(name)) {
+        throw new Error('Invalid cookie name format');
     }
 
     const cookieOptions = {
-        ...CookieOptions.SECURE,
+        path: '/',
         ...options
     };
 
-    const finalValue = encodeURIComponent(value);
-    let cookieString = `${name}=${finalValue}`;
-
-    Object.entries(cookieOptions).forEach(([key, value]) => {
-        if (value === true) {
-            cookieString += `; ${key}`;
-        } else if (value !== false && value != null) {
-            cookieString += `; ${key}=${value}`;
-        }
-    });
-
-    document.cookie = cookieString;
+    document.cookie = `${name}=${encodeURIComponent(value)}; ${formatCookieOptions(cookieOptions)}`;
 };
 
 /**
- * Retrieves a cookie value by name
- * @param {string} name - Cookie name
- * @returns {string|null} Cookie value if found
+ * Gets cookie value by name
  */
-const getCookie = (name) => {
-    if (!name) {
-        throw new Error('Cookie name is required');
-    }
+const getCookie = name => {
+    if (!name) return null;
 
-    const cookies = document.cookie.split('; ');
-    const cookieString = cookies.find(row => row.startsWith(name + '='));
+    const cookies = document.cookie
+        .split('; ')
+        .reduce((acc, cookie) => {
+            const [cookieName, cookieValue] = cookie.split('=');
+            return {
+                ...acc,
+                [cookieName]: decodeURIComponent(cookieValue)
+            };
+        }, {});
 
-    if (!cookieString) {
-        return null;
-    }
-
-    return decodeURIComponent(cookieString.split('=')[1]);
+    return cookies[name] || null;
 };
 
 /**
  * Removes a cookie by name
- * @param {string} name - Cookie name
  */
-const removeCookie = (name) => {
-    setCookie(name, '', {
-        ...CookieOptions.SECURE,
-        expires: new Date(0)
-    });
-};
+const removeCookie = name => {
+    if (!name) return;
 
-/**
- * Authentication cookie management
- */
-const setAuthCookie = (token) => {
-    setCookie(CookieNames.AUTH_TOKEN, token, CookieOptions.AUTH);
-};
-
-const getAuthCookie = () => {
-    return getCookie(CookieNames.AUTH_TOKEN);
-};
-
-const removeAuthCookie = () => {
-    removeCookie(CookieNames.AUTH_TOKEN);
+    // Set expiration to past date to remove cookie
+    document.cookie = `${name}=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT`;
 };
 
 module.exports = {
+    COOKIE_OPTIONS,
+    COOKIE_NAMES,
     setCookie,
     getCookie,
-    removeCookie,
-    setAuthCookie,
-    getAuthCookie,
-    removeAuthCookie,
-    CookieNames,
-    CookieOptions
+    removeCookie
 };

@@ -1,36 +1,67 @@
+// app/app.js
 "use strict";
 
-const router = require('../modules/router.js');
-const routes = require('./routes.js');
+const router = require('../modules/router');
+const { routes, hasRouteAccess } = require('./routes');
+const auth = require('../modules/auth');
 
-require('../components/Header/index.js');
-require('../components/Footer/index.js');
-require('../components/DashboardPage/index.js');
-require('../components/Sidebar/index.js');
-require('../components/LoginPage/index.js');
+/**
+ * Loads required components
+ */
+const loadComponents = () => {
+    require('../components/LoginPage');
+    require('../components/DashboardPage');
+    require('../components/UsersPage');
+    require('../components/shared/Header');
+    require('../components/shared/Footer');
+    require('../components/shared/Sidebar');
+};
 
-class App {
-    constructor() {
-        this.initializeRouter();
-        this.setupEventListeners();
-    }
-
-    initializeRouter() {
-        // Register routes from configuration (pass the entire route object)
-        routes.forEach(route => {
-            router.addRoute(route.path, {
-                component: route.component,
-                requiresAuth: route.requiresAuth !== undefined ? route.requiresAuth : (route.auth || false)
-            });
+/**
+ * Initializes application routes
+ */
+const initializeRoutes = () => {
+    routes.forEach(route => {
+        router.addRoute(route.path, {
+            component: route.component,
+            requiresAuth: route.requiresAuth,
+            accessCheck: () => hasRouteAccess(route)
         });
-    }
+    });
+};
 
-    setupEventListeners() {
-        window.addEventListener('DOMContentLoaded', () => {
-            router.init();
-        });
-    }
-}
+/**
+ * Initializes application event listeners
+ */
+const initializeEventListeners = () => {
+    // Handle authentication events
+    window.addEventListener('auth:login', () => {
+        const authState = auth.getAuthState();
+        if (authState.user) {
+            router.navigate('/dashboard');
+        }
+    });
 
-const app = new App();
-module.exports = app;
+    window.addEventListener('auth:logout', () => {
+        router.navigate('/');
+    });
+
+    // Handle route changes
+    window.addEventListener('DOMContentLoaded', () => {
+        router.init();
+    });
+};
+
+/**
+ * Initialize the application
+ */
+const initializeApp = () => {
+    loadComponents();
+    initializeRoutes();
+    initializeEventListeners();
+};
+
+// Start the application
+initializeApp();
+
+module.exports = { initializeApp };

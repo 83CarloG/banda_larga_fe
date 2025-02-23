@@ -1,69 +1,130 @@
+// modules/api.js
 "use strict";
 
 const axios = require('axios');
-const cookies = require('./cookies.js');
+const auth = require('./auth');
+const router = require('./router');
 
 /**
- * Creates an API client with authentication and error handling
- * @param {string} baseURL - Base URL for API requests
- * @returns {Object} API client with authentication methods
+ * Default API configuration
  */
-const createApiClient = (baseURL) => {
-    const axiosInstance = axios.create({
-        baseURL,
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    });
+const API_CONFIG = {
+    baseURL: '/api',
+    headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+    },
+    timeout: 30000 // 30 seconds
+};
 
-    // Add authentication header to requests
-    axiosInstance.interceptors.request.use(
-        (config) => {
-            const token = cookies.getAuthCookie();
+/**
+ * Creates base axios instance
+ * @returns {Object} Configured axios instance
+ */
+const createAxiosInstance = () => {
+    const instance = axios.create(API_CONFIG);
+
+    // Request interceptor
+    instance.interceptors.request.use(
+        config => {
+            const token = auth.getToken();
             if (token) {
                 config.headers.Authorization = token;
             }
             return config;
         },
-        (error) => Promise.reject(error)
+        error => Promise.reject(error)
     );
 
-    // Handle authentication errors
-    axiosInstance.interceptors.response.use(
-        (response) => response,
-        (error) => {
-            if (error.response?.status === 401) {
-                cookies.removeAuthCookie();
-                window.location.href = '/';
+    // Response interceptor
+    instance.interceptors.response.use(
+        response => response.data,
+        error => {
+            const status = error.response?.status;
+            const data = error.response?.data;
+
+            // Handle 401 Unauthorized
+            if (status === 401) {
+                auth.clearAuth();
+                router.navigate('/');
+                throw new Error('Session expired. Please log in again.');
             }
-            return Promise.reject(error.response?.data?.message || 'Request failed');
+
+            // Handle 403 Forbidden
+            if (status === 403) {
+                throw new Error('You do not have permission to perform this action.');
+            }
+
+            // Handle 422 Validation Error
+            if (status === 422) {
+                const message = data?.message || 'Validation failed';
+                const errors = data?.errors || {};
+                throw { message, errors };
+            }
+
+            // Handle 500 and other errors
+            throw new Error(data?.message || 'An unexpected error occurred');
         }
     );
 
-    return {
-        /**
-         * Authenticates user with email and password
-         * @param {string} email - User's email
-         * @param {string} password - User's password
-         * @returns {Promise<Object>} Authentication response
-         */
-        login: async (email, password) => {
-            try {
-                return await axiosInstance.post('/login', { email, password });
-            } catch (error) {
-                throw new Error('Unable to log in. Please check your credentials and try again.');
-            }
-        },
-
-        /**
-         * Logs out current user and cleans up session
-         */
-        logout: () => {
-            cookies.removeAuthCookie();
-            window.location.href = '/';
-        }
-    };
+    return instance;
 };
 
-const apiClient = createApiClient('/api');
+/**
+ * Creates API methods
+ * @param {Object} axiosInstance - Configured axios instance
+ * @returns {Object} API methods
+ */
+const createApiMethods = (axiosInstance) => ({
+    /**
+     * Login user
+     * @param {string} email
+     * @param {string} password
+     * @returns {Promise<Object>}
+     */
+    login: async (email, password) => {
+        try {
+            const response = await axiosInstance.post('/login', {
+                email,
+                password
+            });
+
+            if (response.status === 'success') {
+                auth.setAuthFromResponse(response);
+            }
+
+            return response;
+        } catch (error) {
+            console.error('Login error:', error);
+            throw error;
+        }
+    },
+
+    /**
+     * Logout user
+     * @returns {Promise<void>}
+     */
+    logout: async () => {
+        try {
+            const response = await axiosInstance.post('/logout');
+
+            if (response.status === 'success') {
+                auth.clearAuth();
+                router.navigate('/');
+            }
+
+            return response;
+        } catch (error) {
+            console.error('Logout error:', error);
+            // Even if API call fails, clear auth and redirect
+            auth.clearAuth();
+            router.navigate('/');
+            throw error;
+        }
+    },
+
+});
+
+// Create and export API client instance
+const apiClient = createApiMethods(createAxiosInstance());
 module.exports = apiClient;
