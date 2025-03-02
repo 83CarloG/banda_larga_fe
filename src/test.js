@@ -1,7 +1,7 @@
 // test-utils.js
 const { css, classNames, cssVar } = require('./utils/styleUtils');
 const { sanitize, sanitizeObject } = require('./utils/security');
-const { isValidEmail, validatePassword } = require('./utils/validation');
+const { isValidEmail, validatePassword } = require('./utils/_validation');
 const { EVENTS, CSS_VARS } = require('./utils/constants');
 
 // Test styleUtils

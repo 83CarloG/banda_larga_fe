@@ -1,10 +1,14 @@
+// components/UsersPage/index.js
 "use strict";
 
 const StatefulComponent = require('../base/StateFullComponent');
-const styles = require('./styles');
-const template = require('./template');
-const { validateUserData } = require('./validation');
 const userService = require('./usersService');
+const UserForm = require('./UserForm');
+const UsersTable = require('./UsersTable');
+const { createPageTemplate } = require('./template');
+const validators = require('../../utils/validators');
+const { sanitizeObject } = require('../../utils/security');
+const { EVENTS } = require('../../utils/constants');
 
 class UsersPageElement extends StatefulComponent {
     constructor() {
@@ -14,108 +18,87 @@ class UsersPageElement extends StatefulComponent {
         // Initialize state
         this.initState({
             users: [],
-            isLoading: false,
+            isLoading: true,
             error: null,
-            editingUser: null,
-            formData: {
-                email: '',
-                first_name: '',
-                last_name: '',
-                active: true
-            }
+            editingUser: null
         });
 
-        // Bind methods
-        this.handleSubmit = this.handleSubmit.bind(this);
+        // Bind methods to maintain context
+        this.handleSubmitSuccess = this.handleSubmitSuccess.bind(this);
+        this.handleSubmitError = this.handleSubmitError.bind(this);
         this.handleEdit = this.handleEdit.bind(this);
         this.handleDelete = this.handleDelete.bind(this);
         this.handleCancel = this.handleCancel.bind(this);
-        this.handleInputChange = this.handleInputChange.bind(this);
+        this.handleFormEvent = this.handleFormEvent.bind(this);
     }
 
     connectedCallback() {
         super.connectedCallback();
-        this.setupEventListeners();
+
+        // Initial render
+        this.render();
+
+        // Fetch data
         this.fetchUsers();
+
+        // Add event listeners for form events
+        this.shadowRoot.addEventListener(EVENTS.FORM.SUBMIT, this.handleFormEvent);
+        this.shadowRoot.addEventListener(EVENTS.FORM.ERROR, this.handleFormEvent);
+        this.shadowRoot.addEventListener(EVENTS.FORM.VALIDATE, this.handleFormEvent);
     }
 
-    setupEventListeners() {
-        // Form events
-        this.shadowRoot.addEventListener('submit', (event) => {
-            if (event.target.matches('#userForm')) {
-                event.preventDefault();
-                this.handleSubmit();
-            }
-        });
+    disconnectedCallback() {
+        super.disconnectedCallback();
 
-        // Input changes
-        this.shadowRoot.addEventListener('input', (event) => {
-            const input = event.target.closest('input[name="active"]');
-            if (input) {
-                const name = input.name;
-                const value = input.checked;
-                this.handleInputChange(name, value);
-            }
-        });
-
-        // Button clicks
-        this.shadowRoot.addEventListener('click', (event) => {
-            const button = event.target.closest('.edit-btn, .delete-btn, .cancel-btn');
-            if (!button) return;
-
-            if (button.matches('.edit-btn')) {
-                this.handleEdit(Number(button.dataset.id));
-            } else if (button.matches('.delete-btn')) {
-                this.handleDelete(Number(button.dataset.id));
-            } else if (button.matches('.cancel-btn')) {
-                this.handleCancel();
-            }
-        });
+        // Remove event listeners
+        this.shadowRoot.removeEventListener(EVENTS.FORM.SUBMIT, this.handleFormEvent);
+        this.shadowRoot.removeEventListener(EVENTS.FORM.ERROR, this.handleFormEvent);
+        this.shadowRoot.removeEventListener(EVENTS.FORM.VALIDATE, this.handleFormEvent);
     }
 
-    handleInputChange(name, value) {
-        this.setState(state => ({
-            formData: {
-                ...state.formData,
-                [name]: value
+    handleFormEvent(event) {
+        // Log form events for debugging
+        if (event.type === EVENTS.FORM.ERROR) {
+            console.error('Form Error:', event.detail.message);
+        } else if (event.type === EVENTS.FORM.SUBMIT) {
+            console.log('Form Submit:', event.detail.formData);
+        } else if (event.type === EVENTS.FORM.VALIDATE) {
+            if (!event.detail.isValid) {
+                console.warn('Form Validation Failed:', event.detail.errors);
             }
-        }));
+        }
     }
 
     async fetchUsers() {
-        this.setState({ isLoading: true, error: null });
-
         try {
+            this.setState({ isLoading: true, error: null });
             const users = await userService.fetchUsers();
-            this.setState({ users, isLoading: false });
+
+            // Sanitize user data
+            const sanitizedUsers = Array.isArray(users)
+                ? users.map(user => sanitizeObject(user))
+                : [];
+
+            this.setState({ users: sanitizedUsers, isLoading: false });
         } catch (error) {
-            this.handleError('Failed to fetch users', error);
+            this.setState({
+                error: error.message || 'Failed to fetch users',
+                isLoading: false
+            });
+            console.error("Error fetching users:", error);
         }
     }
 
-    async handleSubmit() {
-        const { formData, editingUser } = this.getState();
+    handleSubmitSuccess(response) {
+        // Reset editing state and refresh users
+        this.setState({ editingUser: null });
+        this.fetchUsers();
+    }
 
-        const validation = validateUserData(formData);
-        if (!validation.isValid) {
-            this.setState({ error: Object.values(validation.errors)[0] });
-            return;
-        }
-
-        this.setState({ isLoading: true, error: null });
-
-        try {
-            if (editingUser) {
-                await userService.updateUser(editingUser.id, formData);
-            } else {
-                await userService.createUser(formData);
-            }
-
-            this.resetForm();
-            await this.fetchUsers();
-        } catch (error) {
-            this.handleError('Failed to save user', error);
-        }
+    handleSubmitError(error) {
+        this.setState({
+            error: error.message || 'Failed to save user'
+        });
     }
 
     handleEdit(userId) {
@@ -123,15 +106,37 @@ class UsersPageElement extends StatefulComponent {
         const user = users.find(u => u.id === userId);
 
         if (user) {
-            this.setState({
-                editingUser: user,
-                formData: {
-                    email: user.email,
-                    first_name: user.first_name,
-                    last_name: user.last_name,
-                    active: user.active
-                }
-            });
+            // Validate user manually since we don't have a validateUserData function
+            let isValid = true;
+            const errors = {};
+
+            // Basic validation
+            if (!user.email) {
+                isValid = false;
+                errors.email = 'Email is required';
+            } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(user.email)) {
+                isValid = false;
+                errors.email = 'Invalid email format';
+            }
+
+            if (!user.first_name) {
+                isValid = false;
+                errors.first_name = 'First name is required';
+            }
+
+            if (!user.last_name) {
+                isValid = false;
+                errors.last_name = 'Last name is required';
+            }
+
+            if (!isValid) {
+                this.setState({
+                    error: 'Cannot edit user: Invalid user data'
+                });
+                return;
+            }
+
+            this.setState({ editingUser: user });
         }
     }
 
@@ -140,61 +145,65 @@ class UsersPageElement extends StatefulComponent {
             return;
         }
 
-        this.setState({ isLoading: true, error: null });
-
         try {
+            this.setState({ isLoading: true, error: null });
             await userService.deleteUser(userId);
             await this.fetchUsers();
         } catch (error) {
-            this.handleError('Failed to delete user', error);
+            this.setState({
+                error: error.message || 'Failed to delete user',
+                isLoading: false
+            });
+            console.error("Error deleting user:", error);
         }
     }
 
     handleCancel() {
-        this.resetForm();
-    }
-
-    resetForm() {
-        this.setState({
-            editingUser: null,
-            formData: {
-                email: '',
-                first_name: '',
-                last_name: '',
-                active: true
-            },
-            error: null
-        });
-    }
-
-    handleError(message, error) {
-        console.error(message, error);
-
-        this.setState({
-            error: error.message || message,
-            isLoading: false
-        });
-
-        if (this._errorTimeout) {
-            clearTimeout(this._errorTimeout);
-        }
-        this._errorTimeout = setTimeout(() => {
-            this.setState({ error: null });
-        }, 5000);
-    }
-
-    cleanup() {
-        if (this._errorTimeout) {
-            clearTimeout(this._errorTimeout);
-        }
+        this.setState({ editingUser: null });
     }
 
     render() {
         const state = this.getState();
-        this.shadowRoot.innerHTML = `
-            <style>${styles()}</style>
-            ${template(state)}
-        `;
+
+        // Use template to create HTML
+        this.shadowRoot.innerHTML = createPageTemplate(state);
+
+        // Setup components after DOM is updated
+        this.setupComponents();
+    }
+
+    setupComponents() {
+        const { users, editingUser, isLoading } = this.getState();
+
+        // Get container elements
+        const formContainer = this.shadowRoot.querySelector('#form-container');
+        const tableContainer = this.shadowRoot.querySelector('#table-container');
+
+        if (!formContainer || !tableContainer) return;
+
+        // Create or update form component
+        const userForm = UserForm({
+            user: editingUser,
+            onSubmit: this.handleSubmitSuccess,
+            onCancel: () => this.handleCancel(),
+            onError: this.handleSubmitError
+        });
+
+        // Create or update table component
+        const usersTable = UsersTable({
+            users,
+            editingUser,
+            isLoading,
+            onEdit: this.handleEdit,
+            onDelete: this.handleDelete
+        });
+
+        // Clear and append to containers
+        formContainer.innerHTML = '';
+        formContainer.appendChild(userForm.getElement());
+
+        tableContainer.innerHTML = '';
+        tableContainer.appendChild(usersTable.getElement());
     }
 }
 

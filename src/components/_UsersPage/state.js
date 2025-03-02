@@ -20,6 +20,7 @@
 /**
  * Creates initial state object
  * @returns {UserState}
+ * @returns {UserState}
  */
 const createInitialState = () => ({
     users: [],
