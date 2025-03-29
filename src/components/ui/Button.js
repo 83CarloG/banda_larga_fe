@@ -1,4 +1,3 @@
-// components/ui/Button.js
 "use strict";
 
 /**

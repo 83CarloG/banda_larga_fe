@@ -99,7 +99,7 @@ const withErrorHandling = (operation) => async (...args) => {
 /**
  * Validates required fields in user data
  */
-const validateUserData = (userData, requiredFields = ['email', 'first_name', 'last_name']) => {
+const validateUserData = (userData, requiredFields = ['email', 'first_name', 'last_name', 'role_id']) => {
     const missingFields = requiredFields.filter(field => !userData[field]);
     if (missingFields.length > 0) {
         throw new Error(`Missing required fields: ${missingFields.join(', ')}`);
@@ -134,23 +134,34 @@ const createApiMethods = (instance) => ({
         }
     }),
 
-    // User endpoints
+    /// User endpoints
     getUsers: withErrorHandling(async () =>
         instance.get('/users')
     ),
 
     getUser: withErrorHandling(async (userId) =>
-        instance.get(`/users/${userId}`)
+        // Using Laravel's edit route convention
+        instance.get(`/users/${userId}/edit`)
     ),
 
     createUser: withErrorHandling(async (userData) => {
-        validateUserData(userData);
+        // Make sure required fields are present
+        if (!userData.email || !userData.first_name || !userData.last_name || !userData.role_id) {
+            throw new Error('Missing required fields');
+        }
+
+        // Ensure role_id is a number
+        userData.role_id = parseInt(userData.role_id, 10);
         return instance.post('/users', userData);
     }),
 
-    updateUser: withErrorHandling(async (userId, userData) =>
-        instance.put(`/users/${userId}`, userData)
-    ),
+    updateUser: withErrorHandling(async (userId, userData) => {
+        // Ensure role_id is a number if present
+        if (userData.role_id) {
+            userData.role_id = parseInt(userData.role_id, 10);
+        }
+        return instance.put(`/users/${userId}`, userData);
+    }),
 
     deleteUser: withErrorHandling(async (userId) =>
         instance.delete(`/users/${userId}`)

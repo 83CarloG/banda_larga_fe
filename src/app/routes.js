@@ -48,6 +48,12 @@ const routes = [
 
     }),
 
+    createRoute('/centers', () => document.createElement('centers-page'), {
+        requiresAuth: true,
+        requiredPermissions: ['centers'],
+        requiredRoles: ['administrator', 'supervisor']
+    }),
+
     createRoute('/reports', () => document.createElement('reports-page'), {
         requiresAuth: true,
         requiredPermissions: ['view_reports']

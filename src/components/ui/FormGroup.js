@@ -1,4 +1,3 @@
-// components/ui/FormGroup.js
 "use strict";
 
 /**

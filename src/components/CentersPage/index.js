@@ -1,27 +1,26 @@
-// components/UsersPage/index.js
+// components/CentersPage/index.js
 "use strict";
 
 const StatefulComponent = require('../base/StateFullComponent');
-const userService = require('./usersService');
-const UserForm = require('./userForm');
-const UsersTable = require('./usersTable');
+const centerService = require('./centersService');
+const CenterForm = require('./centerForm');
+const CentersGrid = require('./centersGrid');
 const { createPageTemplate } = require('./template');
 const validators = require('../../utils/validators');
-
 const { sanitizeObject } = require('../../utils/security');
 const { EVENTS } = require('../../utils/constants');
 
-class UsersPageElement extends StatefulComponent {
+class CentersPageElement extends StatefulComponent {
     constructor() {
         super();
         this.attachShadow({ mode: 'open' });
 
         // Initialize state
         this.initState({
-            users: [],
+            centers: [],
             isLoading: true,
             error: null,
-            editingUser: null
+            editingCenter: null
         });
 
         // Bind methods to maintain context
@@ -31,6 +30,7 @@ class UsersPageElement extends StatefulComponent {
         this.handleDelete = this.handleDelete.bind(this);
         this.handleCancel = this.handleCancel.bind(this);
         this.handleFormEvent = this.handleFormEvent.bind(this);
+        this.handleAddNew = this.handleAddNew.bind(this);
     }
 
     connectedCallback() {
@@ -40,7 +40,7 @@ class UsersPageElement extends StatefulComponent {
         this.render();
 
         // Fetch data
-        this.fetchUsers();
+        this.fetchCenters();
 
         // Add event listeners for form events
         this.shadowRoot.addEventListener(EVENTS.FORM.SUBMIT, this.handleFormEvent);
@@ -70,103 +70,93 @@ class UsersPageElement extends StatefulComponent {
         }
     }
 
-    async fetchUsers() {
+    async fetchCenters() {
         try {
             this.setState({ isLoading: true, error: null });
-            const users = await userService.fetchUsers();
+            const centers = await centerService.fetchCenters();
 
-            // Sanitize user data
-            const sanitizedUsers = Array.isArray(users)
-                ? users.map(user => sanitizeObject(user))
+            // Sanitize center data
+            const sanitizedCenters = Array.isArray(centers)
+                ? centers.map(center => sanitizeObject(center))
                 : [];
 
-            this.setState({ users: sanitizedUsers, isLoading: false });
+            this.setState({ centers: sanitizedCenters, isLoading: false });
         } catch (error) {
             this.setState({
-                error: error.message || 'Failed to fetch users',
+                error: error.message || 'Failed to fetch centers',
                 isLoading: false
             });
-            console.error("Error fetching users:", error);
+            console.error("Error fetching centers:", error);
         }
     }
 
     handleSubmitSuccess(response) {
-        // Reset editing state and refresh users
-        this.setState({ editingUser: null });
-        this.fetchUsers();
+        // Reset editing state and refresh centers
+        this.setState({ editingCenter: null });
+        this.fetchCenters();
     }
 
     handleSubmitError(error) {
         this.setState({
-            error: error.message || 'Failed to save user'
+            error: error.message || 'Failed to save center'
         });
     }
 
-    handleEdit(userId) {
-        const { users } = this.getState();
-        const user = users.find(u => u.id === userId);
+    handleEdit(centerId) {
+        const { centers } = this.getState();
+        const center = centers.find(c => c.id === centerId);
 
-        if (user) {
-            // Validate user manually
+        if (center) {
+            // Validate center manually before editing
             let isValid = true;
             const errors = {};
 
             // Basic validation
-            if (!user.email) {
+            if (!center.name) {
                 isValid = false;
-                errors.email = 'Email is required';
-            } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(user.email)) {
-                isValid = false;
-                errors.email = 'Invalid email format';
+                errors.name = 'Center name is required';
             }
 
-            if (!user.first_name) {
+            if (!center.type || center.type.length === 0) {
                 isValid = false;
-                errors.first_name = 'First name is required';
-            }
-
-            if (!user.last_name) {
-                isValid = false;
-                errors.last_name = 'Last name is required';
-            }
-
-            // Validate role
-            if (!user.role_id) {
-                isValid = false;
-                errors.role_id = 'Role is required';
+                errors.type = 'At least one center type is required';
             }
 
             if (!isValid) {
                 this.setState({
-                    error: 'Cannot edit user: Invalid user data'
+                    error: 'Cannot edit center: Invalid center data'
                 });
                 return;
             }
 
-            this.setState({ editingUser: user });
+            this.setState({ editingCenter: center });
         }
     }
 
-    async handleDelete(userId) {
-        if (!confirm('Are you sure you want to delete this user?')) {
+    async handleDelete(centerId) {
+        if (!confirm('Are you sure you want to delete this center?')) {
             return;
         }
 
         try {
             this.setState({ isLoading: true, error: null });
-            await userService.deleteUser(userId);
-            await this.fetchUsers();
+            await centerService.deleteCenter(centerId);
+            await this.fetchCenters();
         } catch (error) {
             this.setState({
-                error: error.message || 'Failed to delete user',
+                error: error.message || 'Failed to delete center',
                 isLoading: false
             });
-            console.error("Error deleting user:", error);
+            console.error("Error deleting center:", error);
         }
     }
 
     handleCancel() {
-        this.setState({ editingUser: null });
+        this.setState({ editingCenter: null });
+    }
+
+    handleAddNew() {
+        this.setState({ editingCenter: {} });
     }
 
     render() {
@@ -180,26 +170,32 @@ class UsersPageElement extends StatefulComponent {
     }
 
     setupComponents() {
-        const { users, editingUser, isLoading } = this.getState();
+        const { centers, editingCenter, isLoading } = this.getState();
 
         // Get container elements
         const formContainer = this.shadowRoot.querySelector('#form-container');
-        const tableContainer = this.shadowRoot.querySelector('#table-container');
+        const gridContainer = this.shadowRoot.querySelector('#grid-container');
+        const addButton = this.shadowRoot.querySelector('#add-center-btn');
 
-        if (!formContainer || !tableContainer) return;
+        if (!formContainer || !gridContainer) return;
+
+        // Add event listener to add button
+        if (addButton) {
+            addButton.addEventListener('click', this.handleAddNew);
+        }
 
         // Create or update form component
-        const userForm = UserForm({
-            user: editingUser,
+        const centerForm = CenterForm({
+            center: editingCenter,
             onSubmit: this.handleSubmitSuccess,
             onCancel: () => this.handleCancel(),
             onError: this.handleSubmitError
         });
 
-        // Create or update table component
-        const usersTable = UsersTable({
-            users,
-            editingUser,
+        // Create or update grid component
+        const centersGrid = CentersGrid({
+            centers,
+            editingCenter,
             isLoading,
             onEdit: this.handleEdit,
             onDelete: this.handleDelete
@@ -207,16 +203,18 @@ class UsersPageElement extends StatefulComponent {
 
         // Clear and append to containers
         formContainer.innerHTML = '';
-        formContainer.appendChild(userForm.getElement());
+        if (editingCenter) {
+            formContainer.appendChild(centerForm.getElement());
+        }
 
-        tableContainer.innerHTML = '';
-        tableContainer.appendChild(usersTable.getElement());
+        gridContainer.innerHTML = '';
+        gridContainer.appendChild(centersGrid.getElement());
     }
 }
 
 // Register component
-if (!window.customElements.get('users-page')) {
-    window.customElements.define('users-page', UsersPageElement);
+if (!window.customElements.get('centers-page')) {
+    window.customElements.define('centers-page', CentersPageElement);
 }
 
-module.exports = UsersPageElement;
+module.exports = CentersPageElement;

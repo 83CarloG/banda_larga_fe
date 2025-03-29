@@ -1,3 +1,4 @@
+// components/CentersPage/styles.js
 "use strict";
 
 const styles = () => `
@@ -5,6 +6,7 @@ const styles = () => `
         --primary-color: #2563eb;
         --success-color: #16a34a;
         --danger-color: #dc2626;
+        --warning-color: #ca8a04;
         --text-color: #1e293b;
         --border-color: #e2e8f0;
         --background-light: #f8fafc;
@@ -22,6 +24,7 @@ const styles = () => `
     .header {
         display: flex;
         align-items: center;
+        justify-content: space-between;
         gap: 1rem;
         margin-bottom: 2rem;
         padding-bottom: 1rem;
@@ -51,10 +54,15 @@ const styles = () => `
         margin-bottom: 2rem;
         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
         border: 1px solid var(--border-color);
+        transition: all 0.3s ease;
     }
 
     .form-container.editing-mode {
         border-left: 4px solid var(--primary-color);
+    }
+
+    .form-container.hidden {
+        display: none;
     }
 
     .form-grid {
@@ -62,6 +70,10 @@ const styles = () => `
         grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
         gap: 1.25rem;
         margin-bottom: 1.5rem;
+    }
+
+    .form-full-width {
+        grid-column: 1 / -1;
     }
 
     .form-group {
@@ -77,34 +89,43 @@ const styles = () => `
     }
 
     .form-select {
-    padding: 0.625rem;
-    border: 1px solid var(--border-color);
-    border-radius: 0.5rem;
-    font-size: 1rem;
-    width: 100%;
-    background-color: white;
-    transition: border-color 0.2s;
-    appearance: none;
-    background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%231e293b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 0.5rem center;
-    background-size: 1rem;
-}
+        padding: 0.625rem;
+        border: 1px solid var(--border-color);
+        border-radius: 0.5rem;
+        font-size: 1rem;
+        width: 100%;
+        background-color: white;
+        transition: border-color 0.2s;
+        appearance: none;
+        background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%231e293b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 0.5rem center;
+        background-size: 1rem;
+    }
 
-.form-select:focus {
-    outline: none;
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
-}
-    .form-input {
+    .form-select:focus {
+        outline: none;
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
+    }
+
+    .form-input,
+    .form-textarea {
         padding: 0.625rem;
         border: 1px solid var(--border-color);
         border-radius: 0.5rem;
         font-size: 1rem;
         transition: border-color 0.2s;
+        width: 100%;
     }
 
-    .form-input:focus {
+    .form-textarea {
+        min-height: 100px;
+        resize: vertical;
+    }
+
+    .form-input:focus,
+    .form-textarea:focus {
         outline: none;
         border-color: var(--primary-color);
         box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
@@ -112,7 +133,7 @@ const styles = () => `
 
     .checkbox-group {
         flex-direction: row;
-        align-items: center;
+        flex-wrap: wrap;
         gap: 0.75rem;
     }
 
@@ -213,52 +234,112 @@ const styles = () => `
         fill: currentColor;
     }
 
-    .table-responsive {
-        overflow-x: auto;
-        border-radius: 0.75rem;
-        border: 1px solid var(--border-color);
+    /* Centers Grid Layout */
+    .centers-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    /* Center Card Styles */
+    .center-card {
         background: white;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        border-radius: 0.75rem;
+        overflow: hidden;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        border: 1px solid var(--border-color);
+        transition: transform 0.2s, box-shadow 0.2s;
+        display: flex;
+        flex-direction: column;
     }
 
-    .users-table {
-        width: 100%;
-        border-collapse: collapse;
-        min-width: 800px;
+    .center-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
     }
 
-    .users-table th,
-    .users-table td {
+    .center-card-header {
         padding: 1rem;
-        text-align: left;
         border-bottom: 1px solid var(--border-color);
-        vertical-align: middle;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
     }
 
-    .users-table th {
-        background: var(--background-light);
+    .center-card-title {
+        font-size: 1.125rem;
         font-weight: 600;
-        font-size: 0.875rem;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
+        color: var(--text-color);
+        margin: 0;
     }
 
-    .status-pill {
-        display: inline-block;
-        padding: 0.25rem 0.75rem;
-        border-radius: 1rem;
+    .center-card-body {
+        padding: 1rem;
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .center-info-row {
+        display: flex;
+        gap: 0.5rem;
+    }
+
+    .center-info-label {
+        font-weight: 500;
         font-size: 0.875rem;
+        color: #64748b;
+        min-width: 80px;
+    }
+
+    .center-info-value {
+        font-size: 0.875rem;
+    }
+
+    .center-card-footer {
+        padding: 0.75rem 1rem;
+        border-top: 1px solid var(--border-color);
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .center-types {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-top: 0.5rem;
+    }
+
+    .center-type-tag {
+        background: #e0f2fe;
+        color: #0369a1;
+        font-size: 0.75rem;
+        padding: 0.25rem 0.5rem;
+        border-radius: 1rem;
         font-weight: 500;
     }
 
-    .status-pill.active {
-        background: #dcfce7;
-        color: var(--success-color);
+    .center-status {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
     }
 
-    .status-pill.inactive {
-        background: #fee2e2;
-        color: var(--danger-color);
+    .status-indicator {
+        display: inline-block;
+        width: 0.5rem;
+        height: 0.5rem;
+        border-radius: 50%;
+    }
+
+    .status-active {
+        background-color: var(--success-color);
+    }
+
+    .status-inactive {
+        background-color: var(--danger-color);
     }
 
     .action-buttons {
@@ -282,6 +363,10 @@ const styles = () => `
         color: var(--primary-color);
     }
 
+    .icon-btn.delete-btn:hover {
+        color: var(--danger-color);
+    }
+
     .icon-btn:disabled {
         opacity: 0.5;
         cursor: not-allowed;
@@ -303,7 +388,6 @@ const styles = () => `
         gap: 1rem;
     }
 
-    /* Fixed spinner for perfectly circular animation */
     .spinner {
         display: inline-block;
         width: 2rem;
@@ -324,18 +408,22 @@ const styles = () => `
     }
 
     .empty-state {
-        padding: 2rem;
+        padding: 3rem;
         text-align: center;
         color: #64748b;
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 0.5rem;
+        gap: 1rem;
+        background: white;
+        border-radius: 0.75rem;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        border: 1px solid var(--border-color);
     }
 
     .empty-icon {
-        width: 3rem;
-        height: 3rem;
+        width: 4rem;
+        height: 4rem;
         fill: #cbd5e1;
         margin-bottom: 1rem;
     }
@@ -351,26 +439,32 @@ const styles = () => `
         border: 0;
     }
     
-    /* Transitions for improved fluidity */
-    .form-container {
-        transition: border-color 0.3s ease;
+    .hidden {
+        display: none !important;
     }
-    
-    .badge {
-        transition: all 0.3s ease;
+
+    .tag-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-top: 0.5rem;
     }
-    
-    .error-banner {
-        transition: opacity 0.3s ease;
-        opacity: 1;
+
+    .multi-select-container {
+        width: 100%;
     }
-    
-    .error-banner.hiding {
-        opacity: 0;
+
+    .multi-select-options {
+        margin-top: 0.5rem;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
     }
-    
-    .table-responsive {
-        transition: opacity 0.2s ease;
+
+    .multi-option-container {
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
     }
 
     @media (max-width: 768px) {
@@ -378,11 +472,14 @@ const styles = () => `
             padding: 1rem;
         }
         
+        .centers-grid {
+            grid-template-columns: 1fr;
+        }
+        
         .header {
             flex-direction: column;
             align-items: flex-start;
         }
-    }
-`;
+    };`
 
 module.exports = styles;

@@ -1,286 +1,251 @@
+// components/UsersTable.js
 "use strict";
 
-const StatefulComponent = require('../base/StateFullComponent');
-const styles = require('./styles');
-const template = require('./template');
-const { validateUserData } = require('./validation');
-const userService = require('./usersService');
+const { createLoadingIndicator, createEmptyState, createErrorBanner } = require('./template');
+const { sanitize } = require('../../utils/security');
+const { EVENTS } = require('../../utils/constants');
+const { classNames } = require('../../utils/styleUtils');
 
-class UsersPageElement extends StatefulComponent {
-    constructor() {
-        super();
-        this.attachShadow({ mode: 'open' });
+/**
+ * Creates a reusable users table component
+ *
+ * @param {Object} config - Configuration object
+ * @returns {Object} - Users table component API
+ */
+const UsersTable = (config = {}) => {
+    // Internal state
+    const state = {
+        users: Array.isArray(config.users) ? [...config.users] : [],
+        editingUser: config.editingUser || null,
+        isLoading: config.isLoading !== undefined ? !!config.isLoading : true
+    };
 
-        // Initialize state
-        this.initState({
-            users: [],
-            isLoading: false,
-            submitting: false,  // New property specifically for form submission
-            error: null,
-            editingUser: null,
-            formData: {
-                email: '',
-                first_name: '',
-                last_name: '',
-                active: true
-            }
+    // Callbacks
+    const callbacks = {
+        onEdit: typeof config.onEdit === 'function' ? config.onEdit : () => {},
+        onDelete: typeof config.onDelete === 'function' ? config.onDelete : () => {}
+    };
+
+    // Create table container element
+    const container = document.createElement('div');
+    container.className = 'table-responsive';
+
+    // Create custom event for state changes
+    const emitStateChange = () => {
+        const event = new CustomEvent(EVENTS.STATE.CHANGE, {
+            detail: { ...state },
+            bubbles: true
         });
+        container.dispatchEvent(event);
+    };
 
-        // Add loading timer properties
-        this._submittingTimerId = null;
-        this._submittingStartTime = null;
-
-        // Bind methods
-        this.handleSubmit = this.handleSubmit.bind(this);
-        this.handleEdit = this.handleEdit.bind(this);
-        this.handleDelete = this.handleDelete.bind(this);
-        this.handleCancel = this.handleCancel.bind(this);
-        this.handleInputChange = this.handleInputChange.bind(this);
+    // Render loading state
+    function renderLoader() {
+        container.innerHTML = createLoadingIndicator();
     }
 
-    connectedCallback() {
-        super.connectedCallback();
-        this.setupEventListeners();
-        this.fetchUsers();
+    // Render empty state
+    function renderEmptyState() {
+        container.innerHTML = createEmptyState();
     }
 
-    // Clean fixed setupEventListeners method
-    setupEventListeners() {
-        // Keep the original form submission handler
-        this.shadowRoot.addEventListener('submit', (event) => {
-            if (event.target.matches('#userForm')) {
-                event.preventDefault();
-                this.handleSubmit();
-            }
-        });
+    // Render error state
+    function renderError(message = "Error loading users table") {
+        container.innerHTML = createErrorBanner(message);
+    }
 
-        // For text and email inputs, update state on input but track and restore focus
-        this.shadowRoot.addEventListener('input', (event) => {
-            if (event.target.matches('input[type="text"], input[type="email"]')) {
-                const name = event.target.name;
-                const value = event.target.value;
-                const activeElement = event.target;
-                const selectionStart = activeElement.selectionStart;
-                const selectionEnd = activeElement.selectionEnd;
+    // Create table with programmatically created elements and event listeners
+    function renderTable() {
+        try {
+            // Clear container
+            container.innerHTML = '';
 
-                // Update state
-                this.setState(state => ({
-                    formData: {
-                        ...state.formData,
-                        [name]: value
-                    }
-                }), () => {
-                    // After re-render, restore focus and selection
-                    setTimeout(() => {
-                        const newInput = this.shadowRoot.querySelector(`input[name="${name}"]`);
-                        if (newInput) {
-                            newInput.focus();
-                            if (newInput.setSelectionRange) {
-                                newInput.setSelectionRange(selectionStart, selectionEnd);
-                            }
-                        }
-                    }, 0);
+            // Create table element
+            const tableEl = document.createElement('table');
+            tableEl.className = 'users-table';
+            tableEl.setAttribute('aria-label', 'Users list');
+
+            // Create table header
+            const thead = document.createElement('thead');
+            thead.innerHTML = `
+                <tr>
+                    <th scope="col">Name</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Actions</th>
+                </tr>
+            `;
+            tableEl.appendChild(thead);
+
+            // Create table body
+            const tbody = document.createElement('tbody');
+
+            // If no users, show empty state
+            if (!state.users.length) {
+                const tr = document.createElement('tr');
+                tr.className = 'empty-row';
+
+                const td = document.createElement('td');
+                td.setAttribute('colspan', '4');
+                td.innerHTML = createEmptyState();
+
+                tr.appendChild(td);
+                tbody.appendChild(tr);
+            } else {
+                // Create a row for each user
+                state.users.forEach(user => {
+                    if (!user || !user.id) return;
+
+                    // Get user data with proper sanitization
+                    const firstName = sanitize(user.first_name || '');
+                    const lastName = sanitize(user.last_name || '');
+                    const email = sanitize(user.email || '');
+                    const active = !!user.active;
+                    const id = user.id;
+
+                    // Create row
+                    const tr = document.createElement('tr');
+                    tr.className = classNames(
+                        state.editingUser && state.editingUser.id === id && 'highlight-row'
+                    );
+
+                    // Name cell
+                    const nameCell = document.createElement('td');
+                    nameCell.textContent = `${firstName} ${lastName}`;
+                    tr.appendChild(nameCell);
+
+                    // Email cell
+                    const emailCell = document.createElement('td');
+                    emailCell.textContent = email;
+                    tr.appendChild(emailCell);
+
+                    // Status cell
+                    const statusCell = document.createElement('td');
+                    const statusPill = document.createElement('span');
+                    statusPill.className = classNames(
+                        'status-pill',
+                        active ? 'active' : 'inactive'
+                    );
+                    statusPill.textContent = active ? 'Active' : 'Inactive';
+                    statusCell.appendChild(statusPill);
+                    tr.appendChild(statusCell);
+
+                    // Actions cell
+                    const actionsCell = document.createElement('td');
+                    const actionButtons = document.createElement('div');
+                    actionButtons.className = 'action-buttons';
+
+                    // Edit button
+                    const editBtn = document.createElement('button');
+                    editBtn.className = 'icon-btn edit-btn';
+                    editBtn.setAttribute('data-id', id);
+                    editBtn.setAttribute('aria-label', 'Edit user');
+                    if (state.editingUser) editBtn.disabled = true;
+
+                    editBtn.innerHTML = `
+                        <svg class="icon" viewBox="0 0 24 24">
+                            <path d="M20.71 7.04C21.1 6.65 21.1 6 20.71 5.63L18.37 3.29C18 2.9 17.35 2.9 16.96 3.29L15.12 5.12L18.87 8.87M3 17.25V21H6.75L17.81 9.93L14.06 6.18L3 17.25Z"/>
+                        </svg>
+                    `;
+
+                    // Add click handler
+                    editBtn.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        callbacks.onEdit(id);
+                    });
+
+                    // Delete button
+                    const deleteBtn = document.createElement('button');
+                    deleteBtn.className = 'icon-btn delete-btn';
+                    deleteBtn.setAttribute('data-id', id);
+                    deleteBtn.setAttribute('aria-label', 'Delete user');
+                    if (state.editingUser) deleteBtn.disabled = true;
+
+                    deleteBtn.innerHTML = `
+                        <svg class="icon" viewBox="0 0 24 24">
+                            <path d="M19 4H15.5L14.5 3H9.5L8.5 4H5V6H19M6 19C6 20.1 6.9 21 8 21H16C17.1 21 18 20.1 18 19V7H6V19Z"/>
+                        </svg>
+                    `;
+
+                    // Add click handler
+                    deleteBtn.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        callbacks.onDelete(id);
+                    });
+
+                    // Add buttons to container
+                    actionButtons.appendChild(editBtn);
+                    actionButtons.appendChild(deleteBtn);
+                    actionsCell.appendChild(actionButtons);
+                    tr.appendChild(actionsCell);
+
+                    // Add row to table
+                    tbody.appendChild(tr);
                 });
             }
-        });
 
-        // Handle checkbox changes
-        this.shadowRoot.addEventListener('change', (event) => {
-            if (event.target.matches('input[type="checkbox"]')) {
-                const name = event.target.name;
-                const value = event.target.checked;
-                this.handleInputChange(name, value);
-            }
-        });
+            // Add tbody to table
+            tableEl.appendChild(tbody);
 
-        // Button clicks for edit/delete/cancel
-        this.shadowRoot.addEventListener('click', (event) => {
-            // First check if it's the button itself
-            let button = event.target;
+            // Add table to container
+            container.appendChild(tableEl);
 
-            // If not, try to find a button parent (for SVG icons, etc.)
-            if (!button.classList ||
-                !(button.classList.contains('edit-btn') ||
-                    button.classList.contains('delete-btn') ||
-                    button.classList.contains('cancel-btn'))) {
-                button = event.target.closest('.edit-btn, .delete-btn, .cancel-btn');
-            }
-
-            if (!button) return;
-
-            // Prevent any possible double-firing
-            event.preventDefault();
-            event.stopPropagation();
-
-            if (button.classList.contains('edit-btn')) {
-                this.handleEdit(Number(button.dataset.id));
-            } else if (button.classList.contains('delete-btn')) {
-                this.handleDelete(Number(button.dataset.id));
-            } else if (button.classList.contains('cancel-btn')) {
-                this.handleCancel();
-            }
-        });
-    }
-
-// Also update handleInputChange to work with our temporary _formData
-    handleInputChange(name, value) {
-        // First update our direct reference to form data
-        this._formData = this._formData || {};
-        this._formData[name] = value;
-
-        // Then update the state (which will cause a re-render)
-        this.setState(state => ({
-            formData: {
-                ...state.formData,
-                [name]: value
-            }
-        }));
-    }
-
-    async fetchUsers() {
-        this.setState({ isLoading: true, error: null });
-
-        try {
-            const users = await userService.fetchUsers();
-            this.setState({ users, isLoading: false });
         } catch (error) {
-            this.handleError('Failed to fetch users', error);
+            console.error("Error rendering table:", error);
+            renderError("Error rendering table: " + error.message);
         }
     }
 
-    async handleSubmit() {
-        const { formData, editingUser } = this.getState();
-
-        const validation = validateUserData(formData);
-
-        if (!validation.isValid) {
-            this.setState({ error: Object.values(validation.errors)[0] });
-            return;
-        }
-
-        // Start loading and submission state
-        this.setState({ isLoading: true, submitting: true, error: null });
-
-        // Record start time
-        this._submittingStartTime = Date.now();
-
+    // Main render function
+    function render() {
         try {
-            if (editingUser) {
-                await userService.updateUser(editingUser.id, formData);
-            } else {
-                await userService.createUser(formData);
+            if (state.isLoading) {
+                renderLoader();
+                return;
             }
 
-            // Calculate how much time has passed and ensure minimum 3s
-            const elapsedTime = Date.now() - this._submittingStartTime;
-            const remainingTime = Math.max(0, 3000 - elapsedTime);
-
-            if (remainingTime > 0) {
-                await new Promise(resolve => setTimeout(resolve, remainingTime));
+            if (!Array.isArray(state.users) || state.users.length === 0) {
+                renderEmptyState();
+                return;
             }
 
-            this.resetForm();
-            await this.fetchUsers();
+            renderTable();
+
+            // Emit state change event
+            emitStateChange();
         } catch (error) {
-            // Calculate minimum spinner time
-            const elapsedTime = Date.now() - this._submittingStartTime;
-            const remainingTime = Math.max(0, 3000 - elapsedTime);
-
-            if (remainingTime > 0) {
-                await new Promise(resolve => setTimeout(resolve, remainingTime));
-            }
-
-            this.handleError('Failed to save user', error);
-        } finally {
-            this.setState({ submitting: false });
+            console.error("Error rendering:", error);
+            renderError("Rendering error: " + error.message);
         }
     }
 
-    handleEdit(userId) {
-        const { users } = this.getState();
-        const user = users.find(u => u.id === userId);
+    // Initial render
+    render();
 
-        if (user) {
-            console.log(user)
-            this.setState({
-                editingUser: user,
-                formData: {
-                    email: user.email,
-                    first_name: user.first_name,
-                    last_name: user.last_name,
-                    active: user.active
-                }
-            });
-        }
-    }
+    // Public API
+    return {
+        getElement: () => container,
 
-    async handleDelete(userId) {
-        if (!confirm('Are you sure you want to delete this user?')) {
-            return;
-        }
+        updateUsers: (newUsers) => {
+            state.users = Array.isArray(newUsers) ? [...newUsers] : [];
+            state.isLoading = false;
+            render();
+        },
 
-        this.setState({ isLoading: true, error: null });
+        setEditingUser: (user) => {
+            state.editingUser = user;
+            render();
+        },
 
-        try {
-            await userService.deleteUser(userId);
-            await this.fetchUsers();
-        } catch (error) {
-            this.handleError('Failed to delete user', error);
-        }
-    }
+        setLoading: (loading) => {
+            state.isLoading = !!loading;
+            render();
+        },
 
-    handleCancel() {
-        this.resetForm();
-    }
+        getState: () => ({ ...state })
+    };
+};
 
-    resetForm() {
-        this.setState({
-            editingUser: null,
-            formData: {
-                email: '',
-                first_name: '',
-                last_name: '',
-                active: true
-            },
-            error: null,
-            submitting: false
-        });
-    }
-
-    handleError(message, error) {
-        console.error(message, error);
-
-        this.setState({
-            error: error.message || message,
-            isLoading: false
-        });
-
-        if (this._errorTimeout) {
-            clearTimeout(this._errorTimeout);
-        }
-        this._errorTimeout = setTimeout(() => {
-            this.setState({ error: null });
-        }, 5000);
-    }
-
-    cleanup() {
-        if (this._errorTimeout) {
-            clearTimeout(this._errorTimeout);
-        }
-    }
-
-    render() {
-        const state = this.getState();
-        this.shadowRoot.innerHTML = `
-            <style>${styles()}</style>
-            ${template(state)}
-        `;
-    }
-}
-
-// Register component
-if (!window.customElements.get('users-page')) {
-    window.customElements.define('users-page', UsersPageElement);
-}
-
-module.exports = UsersPageElement;
+module.exports = UsersTable;

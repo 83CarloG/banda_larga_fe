@@ -1,8 +1,7 @@
-// template.js
+// components/CentersPage/template.js
 "use strict";
 
 const { sanitize } = require('../../utils/security');
-const { cssVar, classNames } = require('../../utils/styleUtils');
 const styles = require('./styles');
 
 /**
@@ -11,7 +10,7 @@ const styles = require('./styles');
  * @returns {string} - HTML string
  */
 const createPageTemplate = (state) => {
-    const { users, isLoading, error, editingUser } = state;
+    const { centers, isLoading, error, editingCenter } = state;
 
     return `
         <header-element></header-element>
@@ -19,17 +18,24 @@ const createPageTemplate = (state) => {
         <style>${styles()}</style>
         <div class="container">
             <div class="header">
-                <h2>Users Management</h2>
-                <span class="badge">${editingUser ? 'Editing User' : 'New User'}</span>
+                <h2>Centers Management</h2>
+                ${editingCenter ?
+                    `<span class="badge">${editingCenter.id ? 'Editing Center' : 'New Center'}</span>` :
+                    `<button id="add-center-btn" class="primary-btn">
+                        <svg class="icon" viewBox="0 0 24 24">
+                            <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+                        </svg>
+                        Add Center
+                    </button>`
+                }
             </div>
-            
+
             ${error ? createErrorBanner(error) : ''}
-            
-            <div id="form-container"></div>
-            <div id="table-container"></div>
+
+            <div id="form-container" class="${editingCenter ? 'active' : 'hidden'}"></div>
+            <div id="grid-container"></div>
         </div>
         <footer-element></footer-element>
-
     `;
 };
 
@@ -51,7 +57,7 @@ const createErrorBanner = (errorMessage) => `
  * Creates loading indicator template
  * @returns {string} - HTML string
  */
-const createLoadingIndicator = (message = 'Loading users...') => `
+const createLoadingIndicator = (message = 'Loading centers...') => `
     <div class="loading-indicator">
         <div class="spinner"></div>
         <p>${sanitize(message)}</p>
@@ -65,29 +71,17 @@ const createLoadingIndicator = (message = 'Loading users...') => `
 const createEmptyState = () => `
     <div class="empty-state">
         <svg class="empty-icon" viewBox="0 0 24 24">
-            <path d="M12 5V3M3 7H5M21 7H19M7 3H9M7 21H9M3 5H5M19 5H21M18 16.5C18 17.9 17.18 19 16 19C14.82 19 14 17.9 14 16.5C14 15.1 16 13 16 13C16 13 18 15.1 18 16.5M12 13C10.34 13 9 11.66 9 10C9 8.34 10.34 7 12 7C13.66 7 15 8.34 15 10C15 11.66 13.66 13 12 13Z"/>
+            <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14z"/>
+            <path d="M12 18c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-3.33-5c0-1.84 1.49-3.33 3.33-3.33s3.33 1.49 3.33 3.33-1.49 3.33-3.33 3.33-3.33-1.49-3.33-3.33z"/>
         </svg>
-        <p>No users found</p>
+        <p>No centers found</p>
+        <button id="empty-add-btn" class="primary-btn">Add Your First Center</button>
     </div>
 `;
-
-/**
- * Creates a CSS class string based on conditions
- * @param {Object} conditions - Map of class names to boolean conditions
- * @returns {string} - CSS class string
- */
-const getClassNames = (conditions) => {
-    const classes = [];
-    for (const [className, condition] of Object.entries(conditions)) {
-        if (condition) classes.push(className);
-    }
-    return classes.join(' ');
-};
 
 module.exports = {
     createPageTemplate,
     createErrorBanner,
     createLoadingIndicator,
-    createEmptyState,
-    getClassNames
+    createEmptyState
 };

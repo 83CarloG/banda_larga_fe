@@ -1,4 +1,3 @@
-// components/ui/Checkbox.js
 "use strict";
 
 /**

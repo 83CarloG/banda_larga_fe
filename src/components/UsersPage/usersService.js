@@ -16,11 +16,28 @@ const userService = {
     },
 
     /**
+     * Get user details for editing
+     * @param {number} userId - User ID
+     * @returns {Promise<Object>} - User data with possible roles
+     */
+    async getUser(userId) {
+        const response = await api.getUser(userId);
+        return response.data;
+    },
+
+    /**
      * Create new user
      * @param {Object} userData - User data
      * @returns {Promise<User>}
      */
     async createUser(userData) {
+        // Ensure role_id is properly formatted
+        if (userData && userData.role_id) {
+            userData.role_id = typeof userData.role_id === 'string'
+                ? parseInt(userData.role_id, 10)
+                : userData.role_id;
+        }
+
         const response = await api.createUser(userData);
         return response.data.user;
     },
@@ -32,6 +49,13 @@ const userService = {
      * @returns {Promise<User>}
      */
     async updateUser(userId, userData) {
+        // Ensure role_id is properly formatted and included
+        if (userData && userData.role_id !== undefined) {
+            userData.role_id = typeof userData.role_id === 'string'
+                ? parseInt(userData.role_id, 10)
+                : userData.role_id;
+        }
+
         const response = await api.updateUser(userId, userData);
         return response.data.user;
     },
