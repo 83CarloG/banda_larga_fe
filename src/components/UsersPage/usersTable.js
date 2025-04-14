@@ -1,8 +1,8 @@
-// usersTable.js - Simplified version with role display
+// usersTable.js - Updated with centers display
 "use strict";
 
 /**
- * Creates a simple users table with role display
+ * Creates a users table with role and centers display
  */
 const UsersTable = (config = {}) => {
     // Table state
@@ -31,6 +31,15 @@ const UsersTable = (config = {}) => {
     // Get role name by ID
     function getRoleName(roleId) {
         return roleNames[roleId] || `Role ${roleId}`;
+    }
+
+    // Format centers as comma-separated list
+    function formatCenters(centers) {
+        if (!centers || !Array.isArray(centers) || centers.length === 0) {
+            return '-';
+        }
+
+        return centers.map(center => center.center_name).join(', ');
     }
 
     // Render table
@@ -67,6 +76,7 @@ const UsersTable = (config = {}) => {
                     <th>Name</th>
                     <th>Email</th>
                     <th>Role</th>
+                    <th>Centers</th>
                     <th>Status</th>
                     <th>Actions</th>
                 </tr>
@@ -84,6 +94,7 @@ const UsersTable = (config = {}) => {
             const name = `${user.first_name || ''} ${user.last_name || ''}`;
             const email = user.email || '';
             const roleName = getRoleName(user.role_id);
+            const centersDisplay = formatCenters(user.centers);
             const isActive = user.active;
 
             // Create row HTML
@@ -91,6 +102,7 @@ const UsersTable = (config = {}) => {
                 <td>${name}</td>
                 <td>${email}</td>
                 <td>${roleName}</td>
+                <td>${centersDisplay}</td>
                 <td>
                     <span class="status-pill ${isActive ? 'active' : 'inactive'}">
                         ${isActive ? 'Active' : 'Inactive'}

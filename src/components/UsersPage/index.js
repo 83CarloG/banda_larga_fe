@@ -19,6 +19,8 @@ class UsersPageElement extends StatefulComponent {
         // Initialize state
         this.initState({
             users: [],
+            centers: [],
+            roles: [],
             isLoading: true,
             error: null,
             editingUser: null
@@ -73,14 +75,28 @@ class UsersPageElement extends StatefulComponent {
     async fetchUsers() {
         try {
             this.setState({ isLoading: true, error: null });
-            const users = await userService.fetchUsers();
+            const data = await userService.fetchUsers();
 
             // Sanitize user data
-            const sanitizedUsers = Array.isArray(users)
-                ? users.map(user => sanitizeObject(user))
+            const sanitizedUsers = Array.isArray(data.users)
+                ? data.users.map(user => sanitizeObject(user))
                 : [];
 
-            this.setState({ users: sanitizedUsers, isLoading: false });
+            // Store centers and roles data
+            const centers = Array.isArray(data.centers)
+                ? data.centers.map(center => sanitizeObject(center))
+                : [];
+
+            const roles = Array.isArray(data.roles)
+                ? data.roles.map(role => sanitizeObject(role))
+                : [];
+
+            this.setState({
+                users: sanitizedUsers,
+                centers: centers,
+                roles: roles,
+                isLoading: false
+            });
         } catch (error) {
             this.setState({
                 error: error.message || 'Failed to fetch users',
@@ -136,6 +152,13 @@ class UsersPageElement extends StatefulComponent {
                 errors.role_id = 'Role is required';
             }
 
+            // Validate centers - ensure user has centers if required
+            if (!user.centers || !Array.isArray(user.centers) || user.centers.length === 0) {
+                // We won't block editing for this, as we'll show the centers select
+                // and require selection during form submission
+                console.warn('User has no centers assigned');
+            }
+
             if (!isValid) {
                 this.setState({
                     error: 'Cannot edit user: Invalid user data'
@@ -180,7 +203,7 @@ class UsersPageElement extends StatefulComponent {
     }
 
     setupComponents() {
-        const { users, editingUser, isLoading } = this.getState();
+        const { users, centers, editingUser, isLoading } = this.getState();
 
         // Get container elements
         const formContainer = this.shadowRoot.querySelector('#form-container');
@@ -191,6 +214,7 @@ class UsersPageElement extends StatefulComponent {
         // Create or update form component
         const userForm = UserForm({
             user: editingUser,
+            centers: centers, // Pass centers data to the form
             onSubmit: this.handleSubmitSuccess,
             onCancel: () => this.handleCancel(),
             onError: this.handleSubmitError

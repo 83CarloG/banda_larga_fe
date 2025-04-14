@@ -1,0 +1,456 @@
+ROTTE
+
+Tutte le azioni sono gestite con un try and catch. Se si rompe inaspettatamente qualcosa il sistema ritorna un 500:
+	{
+		"status":"error",
+		"message":"Unexpected error: [ERROR MESSAGE]",
+		"errors":null
+	}
+
+#############################################################################################################################################################
+####################################################################### AUTHENTICATION ######################################################################
+#############################################################################################################################################################
+
+POST      api/login .................................................................................................................... AuthController@login
+	HEADERS
+		Content-Type: application/json
+		Accept: application/json
+	INPUT
+		{
+			"email":"mail@example.com",
+			"password":"password"
+		}
+	OUTPUT
+		{
+			"status": "success",
+			"message": "Logged in successfully",
+			"data": {
+				"token_type": "Bearer",
+				"token": "[TOKEN]",
+				"user": {
+					[USER COLUMNS]
+					"role": {
+						[USER'S ROLE COLUMNS]
+					}
+				},
+				"role": {
+					[USER'S ROLE COLUMNS]
+				},
+				"tabs": [
+					[USER'S TABS]. e.g.: "dashboard","operators","centers","reports","guests"
+				]
+			}
+		}
+		
+POST      api/logout .................................................................................................................. AuthController@logout
+	HEADERS
+		Content-Type: application/json
+		Accept: application/json
+	AUTHENTICATION
+		Bearer Token
+	INPUT
+		NO BODY
+	OUTPUT
+		{
+			"status": "success",
+			"message": "Logged out successfully",
+			"data": null
+		}
+		
+POST      api/refresh-token ..................................................................................................... AuthController@refreshToken
+	HEADERS
+		Content-Type: application/json
+		Accept: application/json
+	AUTHENTICATION
+		Bearer Token
+	INPUT
+		NO BODY
+	OUTPUT
+		{
+			"status": "success",
+			"message": "Token refreshed successfully",
+			"data": {
+				"token_type": "Bearer",
+				"token": "[TOKEN]",
+			}
+		}
+
+#############################################################################################################################################################
+########################################################################### USERS ###########################################################################
+#############################################################################################################################################################
+
+GET|HEAD  api/users .................................................................................................................... UserController@index
+	HEADERS
+		Content-Type: application/json
+		Accept: application/json
+	AUTHENTICATION
+		Bearer Token
+	INPUT
+		NO BODY
+	OUTPUT
+		{
+			"status": "success",
+			"data": {
+				"users": [
+					{
+						[USER'S COLUMNS]
+						"role": {
+							[USER'S ROLE COLUMNS]
+						},
+						"centers": [
+							[
+								{
+									[USER'S CENTER X COLUMNS]
+								},
+								{
+									[USER'S CENTER Y COLUMNS]
+								}
+							]
+						]
+					}
+				]
+			}
+		}
+
+GET|HEAD  api/users/create ............................................................................................................ UserController@create
+	HEADERS
+		Content-Type: application/json
+		Accept: application/json
+	AUTHENTICATION
+		Bearer Token
+	INPUT
+		NO BODY
+	OUTPUT
+		{
+			"status": "success",
+			"data": {
+				"roles": [
+					{
+						[ROLE X COLUMNS],
+					},
+					{
+						[ROLE X COLUMNS],
+					}
+				],
+				"centers": [
+					{
+						[CENTER X COLUMNS],
+					},
+					{
+						[CENTER Y COLUMNS],
+					}
+				]
+			}
+		}
+
+POST      api/users .................................................................................................................... UserController@store
+	HEADERS
+		Content-Type: application/json
+		Accept: application/json
+	AUTHENTICATION
+		Bearer Token
+	INPUT
+		{
+			"center_ids": [CENTER_IDS],
+			"email":"mail@example.com",
+			"first_name":"Test",
+			"last_name":"Test",
+			"role_id":"[ROLE_ID]"
+		}
+	OUTPUT
+		{
+			"status": "success",
+			"message": "Operator successfully created."
+			"data": {
+				"user": {
+					[USER'S COLUMNS]
+				}
+			}
+		}
+	
+GET|HEAD  api/users/{user} .............................................................................................................. UserController@show
+	HEADERS
+		Content-Type: application/json
+		Accept: application/json
+	AUTHENTICATION
+		Bearer Token
+	INPUT
+		NO BODY
+	OUTPUT
+		{
+			"status": "success",
+			"data": {
+				"user": {
+					[USER'S COLUMNS]
+					"role": {
+						[USER'S ROLE COLUMNS]
+					},
+					"centers": [
+						[
+							[USER'S CENTER X COLUMNS],
+							[USER'S CENTER Y COLUMNS],
+						]
+					]
+				}
+			}
+		}
+
+GET|HEAD  api/users/{user}/edit ......................................................................................................... UserController@edit
+	HEADERS
+		Content-Type: application/json
+		Accept: application/json
+	AUTHENTICATION
+		Bearer Token
+	INPUT
+		NO BODY
+	OUTPUT
+		{
+			"status": "success",
+			"data": {
+				"user": {
+					[USER'S COLUMNS]
+					"role": {
+						[USER'S ROLE COLUMNS],
+					},
+					"centers": [
+						{
+							[CENTER X COLUMNS],
+						},
+						{
+							[CENTER Y COLUMNS],
+						}
+					]
+				}
+			}
+		}
+
+PUT       api/users/{user} ............................................................................................................ UserController@update
+	HEADERS
+		Content-Type: application/json
+		Accept: application/json
+	AUTHENTICATION
+		Bearer Token
+	INPUT
+		{
+			"center_ids": [CENTER_IDS],
+			"email":"mail@example.com",
+			"first_name":"Test",
+			"last_name":"Test",
+			"role_id":"[ROLE_ID]"
+		}
+	OUTPUT
+		{
+			"status": "success",
+			"message": "Operator successfully updated."
+			"data": {
+				"user": {
+					[USER'S COLUMNS]
+				},
+				
+				"role": {
+					[USER'S ROLE COLUMNS],
+				},
+				"centers": [
+					{
+						[CENTER X COLUMNS],
+					},
+					{
+						[CENTER Y COLUMNS],
+					}
+				]
+			}
+		}
+
+DELETE    api/users/{user} ........................................................................................................... UserController@destroy
+	HEADERS
+		Content-Type: application/json
+		Accept: application/json
+	AUTHENTICATION
+		Bearer Token
+	INPUT
+		NO BODY
+	OUTPUT
+		{
+			"status": "success",
+			"message": "Operator successfully deleted.",
+			"data": null
+		}
+
+#############################################################################################################################################################
+########################################################################## CENTERS ##########################################################################
+#############################################################################################################################################################
+
+GET|HEAD  api/centers ................................................................................................................ CenterController@index
+	HEADERS
+		Content-Type: application/json
+		Accept: application/json
+	AUTHENTICATION
+		Bearer Token
+	INPUT
+		NO BODY
+	OUTPUT
+		{
+			"status": "success",
+			"data": {
+				"centers": [
+					{
+						[CENTER'S COLUMNS]
+					}
+				]
+			}
+		}
+
+GET|HEAD  api/centers/create ........................................................................................................ CenterController@create
+	HEADERS
+		Content-Type: application/json
+		Accept: application/json
+	AUTHENTICATION
+		Bearer Token
+	INPUT
+		NO BODY
+	OUTPUT
+		{
+			"status": "success",
+			"data": {
+				"centerTypes": [
+					{
+						[CENTER TYPE X COLUMNS],
+					},
+					{
+						[CENTER TYPE X COLUMNS],
+					}
+				]
+			}
+		}
+
+POST      api/centers ................................................................................................................ CenterController@store
+	HEADERS
+		Content-Type: application/json
+		Accept: application/json
+	AUTHENTICATION
+		Bearer Token
+	INPUT
+		{
+			"center_types":[CENTER TYPE IDS],
+			"center_name":"03",
+			"center_opening_date":"2025-02-10",
+			"center_description":"Center 03",
+			"center_vat":"ABCD",
+			"center_responsible":"Mr. Johnes",
+			"center_address":"Via Washington",
+			"center_phone_number":"7453...",
+			"center_email":"pizzocalanro@unmese.prima",
+			"center_note":"Ci hai fatto venire giù un mese prima?"
+		}
+	OUTPUT
+		{
+			"status": "success",
+			"message": "Operator successfully created."
+			"data": {
+				"center": {
+					[CENTER'S COLUMNS]
+				}
+			}
+		}
+		
+GET|HEAD  api/centers/{center} ........................................................................................................ CenterController@show
+	HEADERS
+		Content-Type: application/json
+		Accept: application/json
+	AUTHENTICATION
+		Bearer Token
+	INPUT
+		NO BODY
+	OUTPUT
+		{
+			"status": "success",
+			"data": {
+				"center": {
+					[CENTER'S COLUMNS]
+				}
+			}
+		}
+		
+GET|HEAD  api/centers/{center}/edit ................................................................................................... CenterController@edit
+	HEADERS
+		Content-Type: application/json
+		Accept: application/json
+	AUTHENTICATION
+		Bearer Token
+	INPUT
+		NO BODY
+	OUTPUT
+		{
+			"status": "success",
+			"data": {
+				"center": {
+					[CENTER'S COLUMNS]
+				},
+				"centerTypes": [
+					{
+						[CENTER TYPE X COLUMNS],
+					},
+					{
+						[CENTER TYPE X COLUMNS],
+					}
+				]
+			}
+		}
+
+PUT       api/centers/{center} ...................................................................................................... CenterController@update
+	HEADERS
+		Content-Type: application/json
+		Accept: application/json
+	AUTHENTICATION
+		Bearer Token
+	INPUT
+		{
+			"center_types":[CENTER TYPE IDS],
+			"center_name":"03",
+			"center_opening_date":"2025-02-10",
+			"center_description":"Center 03",
+			"center_vat":"ABCD",
+			"center_responsible":"Mr. Johnes",
+			"center_address":"Via Washington",
+			"center_phone_number":"7453...",
+			"center_email":"pizzocalanro@unmese.prima",
+			"center_note":"Ci hai fatto venire giù un mese prima?"
+		}
+	OUTPUT
+		{
+			"status": "success",
+			"message": "Center successfully created."
+			"data": {
+				"center": {
+					[CENTER'S COLUMNS]
+				}
+			}
+		}
+
+DELETE    api/centers/{center} ..................................................................................................... CenterController@destroy
+	HEADERS
+		Content-Type: application/json
+		Accept: application/json
+	AUTHENTICATION
+		Bearer Token
+	INPUT
+		NO BODY
+	OUTPUT
+		{
+			"status": "success",
+			"message": "Center successfully deleted.",
+			"data": null
+		}
+		
+
+
+GET|HEAD  api/dashboard ........................................................................................................... DashboardController@index
+GET|HEAD  api/esc ...........................................................................................................................................
+GET|HEAD  api/guests .................................................................................................................. GuestController@index
+POST      api/guests .................................................................................................................. GuestController@store
+GET|HEAD  api/guests/create .......................................................................................................... GuestController@create
+GET|HEAD  api/guests/{guest} ........................................................................................................... GuestController@show
+PUT       api/guests/{guest} ......................................................................................................... GuestController@update
+DELETE    api/guests/{guest} ........................................................................................................ GuestController@destroy
+GET|HEAD  api/guests/{guest}/edit ...................................................................................................... GuestController@edit
+

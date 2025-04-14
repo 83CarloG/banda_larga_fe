@@ -1,4 +1,4 @@
-// userForm.js - Simplified version with role support
+// userForm.js - Updated version with centers support
 "use strict";
 
 const Input = require('../ui/Input');
@@ -6,14 +6,16 @@ const Checkbox = require('../ui/Checkbox');
 const Select = require('../ui/Select');
 const Button = require('../ui/Button');
 const FormGroup = require('../ui/FormGroup');
+const MultiSelect = require('../ui/MultiSelect');
 const userService = require('./usersService');
 
 /**
- * Creates a user form with role selection
+ * Creates a user form with role selection and centers multi-select
  */
 const UserForm = (config = {}) => {
     const {
         user = null,
+        centers = [],
         onSubmit = () => {},
         onCancel = () => {},
         onError = () => {}
@@ -29,13 +31,21 @@ const UserForm = (config = {}) => {
     formContainer.className = `form-container ${user ? 'editing-mode' : ''}`;
     formContainer.appendChild(formElement);
 
+    // Extract center IDs from user if present
+    const userCenterIds = Array.isArray(user?.centers) ?
+        user.centers.map(center => center.id.toString()) : [];
+
+    console.log('User centers:', user?.centers);
+    console.log('Center IDs for form:', userCenterIds);
+
     // Form data from user or defaults
     const formData = {
         email: user?.email || '',
         first_name: user?.first_name || '',
         last_name: user?.last_name || '',
         active: user?.active ?? true,
-        role_id: user?.role_id || ''
+        role_id: user?.role_id || '',
+        center_ids: userCenterIds
     };
 
     // Standard input fields
@@ -63,7 +73,7 @@ const UserForm = (config = {}) => {
         onChange: (value) => { formData.last_name = value; }
     });
 
-    // Role select - fixed options, no API call
+    // Role select
     const roleSelect = Select({
         id: 'role_id',
         options: [
@@ -75,6 +85,23 @@ const UserForm = (config = {}) => {
         value: formData.role_id ? formData.role_id.toString() : '',
         required: true,
         onChange: (value) => { formData.role_id = value; }
+    });
+
+    // Centers multi-select
+    const centerOptions = centers.map(center => ({
+        value: center.id.toString(),
+        label: `${center.center_name}${center.center_description ? ' - ' + center.center_description : ''}`
+    }));
+
+    const centersSelect = MultiSelect({
+        id: 'center_ids',
+        options: centerOptions,
+        values: formData.center_ids,
+        required: true,
+        onChange: (values) => {
+            formData.center_ids = values;
+            console.log('Centers selected:', values);
+        }
     });
 
     // Status checkbox
@@ -114,6 +141,14 @@ const UserForm = (config = {}) => {
         required: true
     });
 
+    const centersGroup = FormGroup({
+        label: 'Centers',
+        for: 'center_ids',
+        component: centersSelect,
+        required: true,
+        helpText: 'Select at least one center'
+    });
+
     // Create form grid layout
     const formGrid = document.createElement('div');
     formGrid.className = 'form-grid';
@@ -123,6 +158,7 @@ const UserForm = (config = {}) => {
     formGrid.appendChild(firstNameGroup.getElement());
     formGrid.appendChild(lastNameGroup.getElement());
     formGrid.appendChild(roleGroup.getElement());
+    formGrid.appendChild(centersGroup.getElement());
     formGrid.appendChild(activeCheckbox.getElement());
 
     // Add grid to form
@@ -149,11 +185,18 @@ const UserForm = (config = {}) => {
             return;
         }
 
+        // Validate centers
+        if (!formData.center_ids || formData.center_ids.length === 0) {
+            showError('Please select at least one center');
+            return;
+        }
+
         try {
-            // Convert role_id to number
+            // Convert role_id to number and ensure center_ids is an array of numbers
             const submitData = {
                 ...formData,
-                role_id: formData.role_id ? parseInt(formData.role_id, 10) : null
+                role_id: formData.role_id ? parseInt(formData.role_id, 10) : null,
+                center_ids: formData.center_ids.map(id => parseInt(id, 10))
             };
 
             let response;

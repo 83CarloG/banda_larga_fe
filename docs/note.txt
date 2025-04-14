@@ -1,0 +1,5 @@
+- other page for recovery password with email insert + api
+- page to rescue the password {username fix, new password, password Confirmation}
+- handle error custom from api
+- multichecks for centers / user many centers  OK + error hidden when click on user without center
+- centers page
