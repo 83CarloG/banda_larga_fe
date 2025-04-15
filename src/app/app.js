@@ -13,11 +13,12 @@ const loadComponents = () => {
     require('../components/DashboardPage');
     require('../components/UsersPage');
     require('../components/CentersPage'); // Load the new CentersPage component
-
+    require('../components/GuestsPage');
 
     require('../components/shared/Header');
     require('../components/shared/Footer');
     require('../components/shared/Sidebar');
+
 };
 
 /**

@@ -18,7 +18,7 @@ const createPageTemplate = (state) => {
         <style>${styles()}</style>
         <div class="container">
             <div class="header">
-                <h2>Centers Management</h2>
+                <h2>Gestione Centri</h2>
                 ${editingCenter ?
                     `<span class="badge">${editingCenter.id ? 'Editing Center' : 'New Center'}</span>` :
                     `<button id="add-center-btn" class="primary-btn">

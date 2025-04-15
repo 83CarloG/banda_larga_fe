@@ -1,9 +1,8 @@
-// template.js
+// template.js for GuestsPage
 "use strict";
 
 const { sanitize } = require('../../utils/security');
-const { cssVar, classNames } = require('../../utils/styleUtils');
-const styles = require('./styles');
+const styles = require('./guestStyles');
 
 /**
  * Creates the main page template
@@ -11,7 +10,7 @@ const styles = require('./styles');
  * @returns {string} - HTML string
  */
 const createPageTemplate = (state) => {
-    const { users, isLoading, error, editingUser } = state;
+    const { isLoading, error, isDataEntry, isCreating, isEditing, isViewing, currentGuest } = state;
 
     return `
         <header-element></header-element>
@@ -19,17 +18,44 @@ const createPageTemplate = (state) => {
         <style>${styles()}</style>
         <div class="container">
             <div class="header">
-                <h2>Gestione Utenti</h2>
-                <span class="badge">${editingUser ? 'Modifica Utente' : 'Nuovo Utente'}</span>
+                <h2>
+                    ${isCreating ? 'Crea Ospite' : isEditing ? 'Modifica Ospite' : isViewing ? 'Dettaglio Ospite' : 'Gestione Ospiti'}
+                </h2>
+                ${isCreating || isEditing ?
+        `<span class="badge">${isCreating ? 'Nuovo Ospite' : 'Modifica Ospite'}</span>` :
+        ''
+    }
             </div>
             
             ${error ? createErrorBanner(error) : ''}
             
-            <div id="form-container"></div>
-            <div id="table-container"></div>
+            <!-- Add New Guest button only appears on the listing page -->
+            ${!isCreating && !isEditing && !isViewing && !isDataEntry ?
+        `<div id="action-container" class="action-container">
+                    <button id="create-guest-btn" class="primary-btn">
+                        <svg class="icon" viewBox="0 0 24 24">
+                            <path d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"/>
+                        </svg>
+                        Add New Guest
+                    </button>
+                </div>` :
+        ''
+    }
+            
+            <div id="main-container">
+                ${isCreating || isEditing ?
+        `<div id="form-container"></div>` :
+        `<div id="content-container">
+                        ${isDataEntry ?
+            `<div id="search-container" class="search-panel"></div>` :
+            isViewing ?
+                `<div id="view-container"></div>` :
+                `<div id="table-container"></div>`
+        }
+                    </div>`
+    }
+            </div>
         </div>
-        <footer-element></footer-element>
-
     `;
 };
 
@@ -51,7 +77,7 @@ const createErrorBanner = (errorMessage) => `
  * Creates loading indicator template
  * @returns {string} - HTML string
  */
-const createLoadingIndicator = (message = 'Loading users...') => `
+const createLoadingIndicator = (message = 'Loading...') => `
     <div class="loading-indicator">
         <div class="spinner"></div>
         <p>${sanitize(message)}</p>
@@ -62,32 +88,18 @@ const createLoadingIndicator = (message = 'Loading users...') => `
  * Creates empty state template
  * @returns {string} - HTML string
  */
-const createEmptyState = () => `
+const createEmptyState = (message = 'No guests found') => `
     <div class="empty-state">
         <svg class="empty-icon" viewBox="0 0 24 24">
             <path d="M12 5V3M3 7H5M21 7H19M7 3H9M7 21H9M3 5H5M19 5H21M18 16.5C18 17.9 17.18 19 16 19C14.82 19 14 17.9 14 16.5C14 15.1 16 13 16 13C16 13 18 15.1 18 16.5M12 13C10.34 13 9 11.66 9 10C9 8.34 10.34 7 12 7C13.66 7 15 8.34 15 10C15 11.66 13.66 13 12 13Z"/>
         </svg>
-        <p>No users found</p>
+        <p>${sanitize(message)}</p>
     </div>
 `;
-
-/**
- * Creates a CSS class string based on conditions
- * @param {Object} conditions - Map of class names to boolean conditions
- * @returns {string} - CSS class string
- */
-const getClassNames = (conditions) => {
-    const classes = [];
-    for (const [className, condition] of Object.entries(conditions)) {
-        if (condition) classes.push(className);
-    }
-    return classes.join(' ');
-};
 
 module.exports = {
     createPageTemplate,
     createErrorBanner,
     createLoadingIndicator,
-    createEmptyState,
-    getClassNames
+    createEmptyState
 };

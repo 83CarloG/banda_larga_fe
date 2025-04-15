@@ -54,6 +54,12 @@ const routes = [
         requiredRoles: ['administrator', 'supervisor']
     }),
 
+    createRoute('/guests', () => document.createElement('guests-page'), {
+        requiresAuth: true,
+        requiredPermissions: ['guests'],
+        requiredRoles: ['administrator', 'supervisor', 'data_entry']
+    }),
+
     createRoute('/reports', () => document.createElement('reports-page'), {
         requiresAuth: true,
         requiredPermissions: ['view_reports']
