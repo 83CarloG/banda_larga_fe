@@ -1,4 +1,4 @@
-// components/CentersPage/styles.js
+// src/components/CentersPage/styles.js
 "use strict";
 
 const styles = () => `
@@ -12,15 +12,43 @@ const styles = () => `
         --background-light: #f8fafc;
         --spacing-unit: 0.5rem;
         display: block;
-        padding: 2rem;
         font-family: 'Poppins', system-ui, sans-serif;
     }
 
-    .container {
-        width: calc(100% - var(--sidebar-width));
+    .dashboard-container {
+        width: 100%;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+    }
+
+    .content-wrapper {
+        flex: 1;
         margin-left: var(--sidebar-width);
-        padding: 0 2rem;
+        display: flex;
+        flex-direction: column;
+        width: calc(100% - var(--sidebar-width));
+        height: calc(100vh - var(--header-height)); /* Use height instead of min-height */
+        position: relative; /* Add position relative */
+        overflow: hidden; /* Hide overflow on wrapper */
+    }
+
+    .main-content {
+        flex: 1;
+        padding: 24px;
+        margin: 0 auto;
+        width: 100%;
         box-sizing: border-box;
+        margin-top: var(--header-height);
+        padding-bottom: var(--footer-height);
+        overflow-y: auto; /* Add scrolling just to main content */
+        height: 100%; /* Fill available height */
+        position: absolute; /* Position absolute to prevent extending the container */
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
     }
 
     .header {
@@ -31,6 +59,10 @@ const styles = () => `
         margin-bottom: 2rem;
         padding-bottom: 1rem;
         border-bottom: 2px solid var(--border-color);
+        position: sticky; /* Make header sticky */
+        top: 0;
+        background: var(--background-light);
+        z-index: 10;
     }
 
     h2 {
@@ -470,8 +502,9 @@ const styles = () => `
     }
 
     @media (max-width: 768px) {
-        :host {
-            padding: 1rem;
+        .content-wrapper {
+            margin-left: 0;
+            width: 100%;
         }
         
         .centers-grid {
@@ -482,6 +515,6 @@ const styles = () => `
             flex-direction: column;
             align-items: flex-start;
         }
-    };`
+    }`;
 
 module.exports = styles;

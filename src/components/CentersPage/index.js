@@ -1,4 +1,4 @@
-// components/CentersPage/index.js
+// src/components/CentersPage/index.js
 "use strict";
 
 const StatefulComponent = require('../base/StateFullComponent');
@@ -185,28 +185,28 @@ class CentersPageElement extends StatefulComponent {
         }
 
         // Create or update form component
-        const centerForm = CenterForm({
-            center: editingCenter,
-            onSubmit: this.handleSubmitSuccess,
-            onCancel: () => this.handleCancel(),
-            onError: this.handleSubmitError
-        });
+        if (editingCenter) {
+            const centerForm = CenterForm({
+                center: editingCenter,
+                onSubmit: this.handleSubmitSuccess,
+                onCancel: this.handleCancel,
+                onError: this.handleSubmitError
+            });
+
+            // Clear and append to container
+            formContainer.innerHTML = '';
+            formContainer.appendChild(centerForm.getElement());
+        }
 
         // Create or update grid component
         const centersGrid = CentersGrid({
             centers,
-            editingCenter,
             isLoading,
             onEdit: this.handleEdit,
             onDelete: this.handleDelete
         });
 
-        // Clear and append to containers
-        formContainer.innerHTML = '';
-        if (editingCenter) {
-            formContainer.appendChild(centerForm.getElement());
-        }
-
+        // Clear and append to container
         gridContainer.innerHTML = '';
         gridContainer.appendChild(centersGrid.getElement());
     }

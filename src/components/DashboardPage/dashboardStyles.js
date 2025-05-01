@@ -79,7 +79,6 @@ const styles = () => `
 
     .content-wrapper {
     flex: 1;
-    margin-left: var(--sidebar-width);
     display: flex;
     flex-direction: column;
     width: calc(100% - var(--sidebar-width));

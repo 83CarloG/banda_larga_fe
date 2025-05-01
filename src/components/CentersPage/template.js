@@ -1,4 +1,4 @@
-// components/CentersPage/template.js
+// src/components/CentersPage/template.js
 "use strict";
 
 const { sanitize } = require('../../utils/security');
@@ -13,27 +13,32 @@ const createPageTemplate = (state) => {
     const { centers, isLoading, error, editingCenter } = state;
 
     return `
-        <header-element></header-element>
-        <sidebar-element></sidebar-element>
         <style>${styles()}</style>
-        <div class="container">
-            <div class="header">
-                <h2>Gestione Centri</h2>
-                ${editingCenter ?
-                    `<span class="badge">${editingCenter.id ? 'Editing Center' : 'New Center'}</span>` :
-                    `<button id="add-center-btn" class="primary-btn">
-                        <svg class="icon" viewBox="0 0 24 24">
-                            <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
-                        </svg>
-                        Add Center
-                    </button>`
-                }
+        <div class="dashboard-container">
+            <header-element></header-element>
+            <sidebar-element></sidebar-element>
+            
+            <div class="content-wrapper">
+                <div class="main-content">
+                    <div class="header">
+                        <h2>Gestione Centri</h2>
+                        ${editingCenter ?
+        `<span class="badge">${editingCenter.id ? 'Editing Center' : 'New Center'}</span>` :
+        `<button id="add-center-btn" class="primary-btn">
+                                <svg class="icon" viewBox="0 0 24 24">
+                                    <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+                                </svg>
+                                Add Center
+                            </button>`
+    }
+                    </div>
+
+                    ${error ? createErrorBanner(error) : ''}
+
+                    <div id="form-container" class="${editingCenter ? 'active' : 'hidden'}"></div>
+                    <div id="grid-container"></div>
+                </div>
             </div>
-
-            ${error ? createErrorBanner(error) : ''}
-
-            <div id="form-container" class="${editingCenter ? 'active' : 'hidden'}"></div>
-            <div id="grid-container"></div>
         </div>
         <footer-element></footer-element>
     `;
