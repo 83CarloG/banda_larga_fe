@@ -1,4 +1,4 @@
-// components/GuestsPage/index.js
+// src/components/GuestsPage/index.js
 "use strict";
 
 const StatefulComponent = require('../base/StateFullComponent');
@@ -7,7 +7,7 @@ const GuestsTable = require('./guestsTable');
 const GuestSearch = require('./guestSearch');
 const GuestForm = require('./guestForm');
 const GuestView = require('./guestView');
-const { createPageTemplate, createErrorBanner } = require('./guestTemplate');
+const { createPageTemplate } = require('./guestTemplate');
 const { sanitizeObject } = require('../../utils/security');
 const { EVENTS } = require('../../utils/constants');
 const auth = require('../../modules/auth');

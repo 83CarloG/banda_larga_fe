@@ -1,4 +1,4 @@
-// template.js for GuestsPage
+// Updated template.js for GuestsPage
 "use strict";
 
 const { sanitize } = require('../../utils/security');
@@ -13,48 +13,52 @@ const createPageTemplate = (state) => {
     const { isLoading, error, isDataEntry, isCreating, isEditing, isViewing, currentGuest } = state;
 
     return `
-        <header-element></header-element>
-        <sidebar-element></sidebar-element>
         <style>${styles()}</style>
-        <div class="container">
-            <div class="header">
-                <h2>
-                    ${isCreating ? 'Crea Ospite' : isEditing ? 'Modifica Ospite' : isViewing ? 'Dettaglio Ospite' : 'Gestione Ospiti'}
-                </h2>
-                ${isCreating || isEditing ?
-        `<span class="badge">${isCreating ? 'Nuovo Ospite' : 'Modifica Ospite'}</span>` :
-        ''
-    }
-            </div>
+        <div class="dashboard-container">
+            <header-element></header-element>
+            <sidebar-element></sidebar-element>
             
-            ${error ? createErrorBanner(error) : ''}
-            
-            <!-- Add New Guest button only appears on the listing page -->
-            ${!isCreating && !isEditing && !isViewing && !isDataEntry ?
+            <div class="content-wrapper">
+                <div class="main-content">
+                    <div class="header">
+                        <h2>
+                            ${isCreating ? 'Crea Ospite' : isEditing ? 'Modifica Ospite' : isViewing ? 'Dettaglio Ospite' : 'Gestione Ospiti'}
+                        </h2>
+                    
+
+                    </div>
+                    
+                    ${error ? createErrorBanner(error) : ''}
+                    
+                    <!-- Add New Guest button only appears on the listing page -->
+                    ${!isCreating && !isEditing && !isViewing && !isDataEntry ?
         `<div id="action-container" class="action-container">
-                    <button id="create-guest-btn" class="primary-btn">
-                        <svg class="icon" viewBox="0 0 24 24">
-                            <path d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"/>
-                        </svg>
-                        Add New Guest
-                    </button>
-                </div>` :
+                            <button id="create-guest-btn" class="primary-btn">
+                                <svg class="icon" viewBox="0 0 24 24">
+                                    <path d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"/>
+                                </svg>
+                                Add New Guest
+                            </button>
+                        </div>` :
         ''
     }
-            
-            <div id="main-container">
-                ${isCreating || isEditing ?
+                    
+                    <div id="main-container">
+                        ${isCreating || isEditing ?
         `<div id="form-container"></div>` :
         `<div id="content-container">
-                        ${isDataEntry ?
+                                ${isDataEntry ?
             `<div id="search-container" class="search-panel"></div>` :
             isViewing ?
                 `<div id="view-container"></div>` :
                 `<div id="table-container"></div>`
         }
-                    </div>`
+                            </div>`
     }
+                    </div>
+                </div>
             </div>
+            <footer-element></footer-element>
         </div>
     `;
 };

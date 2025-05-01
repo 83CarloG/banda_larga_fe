@@ -23,7 +23,7 @@ const createPageTemplate = (state) => {
                     <div class="header">
                         <h2>Gestione Centri</h2>
                         ${editingCenter ?
-        `<span class="badge">${editingCenter.id ? 'Editing Center' : 'New Center'}</span>` :
+        `<span class="badge">${editingCenter.id ? 'Modifica Centro' : 'Nuovo Centro'}</span>` :
         `<button id="add-center-btn" class="primary-btn">
                                 <svg class="icon" viewBox="0 0 24 24">
                                     <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
