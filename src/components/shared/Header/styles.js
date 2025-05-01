@@ -82,7 +82,7 @@ const styles = () => `
     }
 
     #logout {
-        background-color: #406B7E;
+        background-color: #D36D48;
         color: #fff;
         border: none;
         padding: 8px 12px;
@@ -95,7 +95,7 @@ const styles = () => `
     }
 
     #logout:hover {
-        background-color: #D36D48;
+        background-color: #B24F2F;
     }
 
     @media (max-width: 768px) {

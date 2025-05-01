@@ -6,13 +6,24 @@ const styles = require('./styles');
 const createTemplate = require('./template');
 
 /**
- * Handles link clicks
+ * Handles link clicks with active state management
  * @param {Event} event - Click event
  */
 const handleLinkClick = (event) => {
     const link = event.target.closest('a');
     if (link) {
         event.preventDefault();
+
+        // Update active state on all links
+        const allLinks = document.querySelectorAll('sidebar-element').forEach(sidebar => {
+            const links = sidebar.shadowRoot.querySelectorAll('.sidebar a');
+            links.forEach(a => a.classList.remove('active'));
+        });
+
+        // Set active state on clicked link
+        link.classList.add('active');
+
+        // Navigate to the route
         router.navigate(link.getAttribute('href'));
 
         // Close sidebar on mobile after navigation
@@ -58,6 +69,24 @@ const setupEventListeners = (shadow) => {
     });
 };
 
+/**
+ * Sets initial active state based on current path
+ * @param {ShadowRoot} shadow - Shadow DOM root
+ */
+const setInitialActiveState = (shadow) => {
+    const currentPath = window.location.pathname;
+    const links = shadow.querySelectorAll('.sidebar a');
+
+    links.forEach(link => {
+        const linkPath = link.getAttribute('href');
+        if (linkPath === currentPath) {
+            link.classList.add('active');
+        } else {
+            link.classList.remove('active');
+        }
+    });
+};
+
 class SidebarElement extends HTMLElement {
     constructor() {
         super();
@@ -70,6 +99,19 @@ class SidebarElement extends HTMLElement {
             ${createTemplate()}
         `;
         setupEventListeners(this.shadowRoot);
+        setInitialActiveState(this.shadowRoot);
+
+        // Listen for route changes to update active state
+        window.addEventListener('popstate', () => {
+            setInitialActiveState(this.shadowRoot);
+        });
+    }
+
+    disconnectedCallback() {
+        // Clean up event listeners when component is removed
+        window.removeEventListener('popstate', () => {
+            setInitialActiveState(this.shadowRoot);
+        });
     }
 }
 
