@@ -21,12 +21,7 @@ const createDashboardTemplate = (state, canViewAdvanced) => {
             
             <div class="content-wrapper">
                 <div class="main-content">
-                    <div class="dashboard-header">
-                        <h2>Dashboard</h2>
-                        ${canViewAdvanced
-        ? '<span class="role-badge advanced">Advanced View</span>'
-        : '<span class="role-badge basic">Basic View</span>'}
-                    </div>
+
                     
                     ${error ? createErrorBanner(error) : ''}
                     

@@ -94,6 +94,7 @@ const styles = () => `
     margin: 0 auto;
     width: 100%;
     box-sizing: border-box;
+    margin-top: var(--header-height);
     margin-bottom: var(--footer-height); /* Additional margin to prevent content from being hidden by footer */
 }
 
@@ -102,6 +103,7 @@ const styles = () => `
         grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
         gap: 1.5rem;
         margin-bottom: 2rem;
+        margin-top: 2rem;
     }
 
     .charts-container {
