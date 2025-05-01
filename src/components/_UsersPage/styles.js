@@ -11,7 +11,7 @@ const styles = () => `
         --spacing-unit: 0.5rem;
         display: block;
         padding: 2rem;
-        font-family: 'Inter', system-ui, sans-serif;
+        font-family: 'Poppins', system-ui, sans-serif;
     }
 
     .container {

@@ -4,54 +4,109 @@
 const api = require('../../modules/api');
 const router = require('../../modules/router');
 const auth = require('../../modules/auth');
+const logoImage = require('/src/assets/img/1@2x.png');
 
 /**
- * Login form styles
+ * Login form styles - Updated with Poppins font
  */
 const styles = `
     :host { display: block; }
     .login-container { 
         max-width: 400px; 
-        margin: 40px auto; 
-        padding: 20px; 
+        margin: 80px auto; 
+        padding: 32px; 
         background: #fff; 
-        border-radius: 8px; 
-        box-shadow: 0 4px 6px rgba(0,0,0,0.1); 
-        font-family: sans-serif; 
+        border-radius: 12px; 
+        box-shadow: 0 8px 16px rgba(0,0,0,0.1); 
+        font-family: var(--font-family, 'Poppins', sans-serif);
+    }
+    .login-header {
+        text-align: center;
+        margin-bottom: 32px;
+    }
+    .login-logo {
+        margin-bottom: 8px;
+    }
+    .login-logo img {
+        max-width: 100%;
+        height: auto;
+    }
+    .login-title {
+        font-size: 20px;
+        font-weight: var(--font-weight-medium, 500);
+        color: var(--text-color, #1e293b);
+        margin-bottom: 8px;
+    }
+    .login-subtitle {
+        font-size: 14px;
+        color: var(--text-secondary, #64748b);
     }
     .form-group {
-        margin-bottom: 1rem;
+        margin-bottom: 20px;
     }
     .form-group label {
         display: block;
-        margin-bottom: .5rem;
+        margin-bottom: 8px;
+        font-weight: var(--font-weight-medium, 500);
+        font-size: 14px;
     }
     .form-group input {
         width: 100%;
-        padding: 8px;
-        border: 1px solid #ccc;
-        border-radius: 4px;
+        padding: 12px 16px;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
         box-sizing: border-box;
+        font-family: var(--font-family, 'Poppins', sans-serif);
+        font-size: 14px;
+        transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .form-group input:focus {
+        outline: none;
+        border-color: var(--primary-color, #1877f2);
+        box-shadow: 0 0 0 3px rgba(24, 119, 242, 0.2);
     }
     button {
         width: 100%;
-        padding: 10px;
-        background: #007bff;
+        padding: 12px;
+        background: var(--primary-color, #1877f2);
         color: #fff;
         border: none;
-        border-radius: 4px;
+        border-radius: 8px;
         cursor: pointer;
-        margin-top: 10px;
+        font-family: var(--font-family, 'Poppins', sans-serif);
+        font-weight: var(--font-weight-medium, 500);
+        font-size: 16px;
+        transition: background 0.2s;
+    }
+    button:hover {
+        background: #0d6efd;
     }
     button:disabled {
         background: #cccccc;
         cursor: not-allowed;
     }
+    .recovery-button {
+        display: block;
+        text-align: center;
+        margin-top: 16px;
+        color: #fff;
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: var(--font-weight-medium, 500);
+    }
+    .recovery-button:hover {
+        text-decoration: underline;
+    }
     .error {
         color: #dc3545;
-        margin-top: 1rem;
+        margin-top: 20px;
         text-align: center;
         display: none;
+        padding: 12px;
+        background: #fff5f5;
+        border-radius: 8px;
+        border-left: 4px solid #dc3545;
+        font-size: 14px;
     }
 `;
 
@@ -61,7 +116,12 @@ const styles = `
 const createTemplate = () => `
     <style>${styles}</style>
     <div class="login-container">
-        <h2>Login</h2>
+        <div class="login-header">
+            <div class="login-logo">
+                <img src="${logoImage}" alt="Banda Larga" />
+            </div>
+        </div>
+        
         <form id="loginForm">
             <div class="form-group">
                 <label for="email">Email:</label>
@@ -73,7 +133,7 @@ const createTemplate = () => `
             </div>
             <button type="submit">Login</button>
         </form>
-        <button id="recoverEmailButton" type="button">Recover Email</button>
+        <button id="recoverEmailButton" type="button" class="recovery-button">Password dimenticata?</button>
         <div id="error" class="error"></div>
     </div>
 `;
@@ -167,3 +227,5 @@ class LoginPageElement extends HTMLElement {
 if (!window.customElements.get('login-page')) {
     window.customElements.define('login-page', LoginPageElement);
 }
+
+module.exports = LoginPageElement;

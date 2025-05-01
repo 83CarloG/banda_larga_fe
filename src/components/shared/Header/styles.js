@@ -5,6 +5,7 @@ const styles = () => `
     :host {
         display: block;
         --header-height: 56px;
+        font-family: var(--font-family, 'Poppins', sans-serif);
     }
 
     .header {
@@ -38,17 +39,18 @@ const styles = () => `
         align-items: center;
         justify-content: center;
         color: #65676b;
-        font-weight: bold;
+        font-weight: var(--font-weight-bold, 700);
     }
 
     .title {
         position: absolute;
         left: 50%;
         transform: translateX(-50%);
-        color: #ff0000;
+        color: var(--primary-color, #1877f2);
         font-size: 24px;
-        font-weight: bold;
+        font-weight: var(--font-weight-bold, 700);
         white-space: nowrap;
+        letter-spacing: 0.5px;
     }
 
     .user-section {
@@ -84,7 +86,7 @@ const styles = () => `
 
     .username {
         font-size: 15px;
-        font-weight: 500;
+        font-weight: var(--font-weight-medium, 500);
         color: #050505;
     }
 
@@ -95,9 +97,10 @@ const styles = () => `
         padding: 8px 12px;
         border-radius: 6px;
         font-size: 14px;
-        font-weight: 500;
+        font-weight: var(--font-weight-medium, 500);
         cursor: pointer;
         transition: background-color 0.2s;
+        font-family: var(--font-family, 'Poppins', sans-serif);
     }
 
     #logout:hover {

@@ -5,6 +5,7 @@ const styles = () => `
     :host {
         display: block;
         --footer-height: 64px;
+        font-family: var(--font-family, 'Poppins', sans-serif);
     }
 
     .footer {
@@ -38,6 +39,7 @@ const styles = () => `
         gap: 8px;
         font-size: 14px;
         color: #1c1e21;
+        font-weight: var(--font-weight-regular, 400);
     }
 
     .contact-item svg {

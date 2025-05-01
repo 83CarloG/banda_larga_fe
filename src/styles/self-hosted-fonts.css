@@ -1,0 +1,55 @@
+/* src/styles/self-hosted-fonts.css */
+/* Use this file if you want to self-host Poppins instead of using Google Fonts */
+
+@font-face {
+    font-family: 'Poppins';
+    font-style: normal;
+    font-weight: 300;
+    font-display: swap;
+    src: url('../assets/fonts/poppins-v20-latin-300.woff2') format('woff2'),
+    url('../assets/fonts/poppins-v20-latin-300.woff') format('woff');
+}
+
+@font-face {
+    font-family: 'Poppins';
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url('../assets/fonts/poppins-v20-latin-regular.woff2') format('woff2'),
+    url('../assets/fonts/poppins-v20-latin-regular.woff') format('woff');
+}
+
+@font-face {
+    font-family: 'Poppins';
+    font-style: normal;
+    font-weight: 500;
+    font-display: swap;
+    src: url('../assets/fonts/poppins-v20-latin-500.woff2') format('woff2'),
+    url('../assets/fonts/poppins-v20-latin-500.woff') format('woff');
+}
+
+@font-face {
+    font-family: 'Poppins';
+    font-style: normal;
+    font-weight: 600;
+    font-display: swap;
+    src: url('../assets/fonts/poppins-v20-latin-600.woff2') format('woff2'),
+    url('../assets/fonts/poppins-v20-latin-600.woff') format('woff');
+}
+
+@font-face {
+    font-family: 'Poppins';
+    font-style: normal;
+    font-weight: 700;
+    font-display: swap;
+    src: url('../assets/fonts/poppins-v20-latin-700.woff2') format('woff2'),
+    url('../assets/fonts/poppins-v20-latin-700.woff') format('woff');
+}
+
+/*
+Note: To use self-hosted fonts:
+1. Download the font files from Google Fonts or another source
+2. Place them in src/assets/fonts/
+3. In fonts.css, replace the Google Fonts import with:
+   @import './self-hosted-fonts.css';
+*/

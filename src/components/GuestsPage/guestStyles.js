@@ -2,7 +2,7 @@
 
 const styles = () => `
     :host {
-        --primary-color: #2563eb;
+        --primary-color: #406B7E;
         --success-color: #16a34a;
         --danger-color: #dc2626;
         --warning-color: #f59e0b;
@@ -13,12 +13,14 @@ const styles = () => `
         --spacing-unit: 0.5rem;
         display: block;
         padding: 2rem;
-        font-family: 'Inter', system-ui, sans-serif;
+        font-family: 'Poppins', system-ui, sans-serif;
     }
 
     .container {
-        max-width: 1200px;
-        margin: 0 auto;
+        width: calc(100% - var(--sidebar-width));
+        margin-left: var(--sidebar-width);
+        padding: 0 2rem;
+        box-sizing: border-box;
     }
 
     .header {

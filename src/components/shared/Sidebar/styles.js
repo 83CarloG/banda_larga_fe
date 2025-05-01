@@ -6,7 +6,7 @@ const styles = () => `
         display: block;
         --header-height: 56px;
         --footer-height: 64px;
-        --sidebar-width: 280px;
+        --sidebar-width: 160px;
         --primary-color: #1877f2;
         --bg-color: #f0f2f5;
     }

@@ -1,6 +1,9 @@
 // app/app.js
 "use strict";
 
+// Import our main CSS
+import '../styles/main.css';
+
 const router = require('../modules/router');
 const { routes, hasRouteAccess } = require('./routes');
 const auth = require('../modules/auth');
@@ -12,13 +15,12 @@ const loadComponents = () => {
     require('../components/LoginPage');
     require('../components/DashboardPage');
     require('../components/UsersPage');
-    require('../components/CentersPage'); // Load the new CentersPage component
+    require('../components/CentersPage');
     require('../components/GuestsPage');
 
     require('../components/shared/Header');
     require('../components/shared/Footer');
     require('../components/shared/Sidebar');
-
 };
 
 /**
