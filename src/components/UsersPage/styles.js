@@ -10,31 +10,63 @@ const styles = () => `
         --background-light: #f8fafc;
         --spacing-unit: 0.5rem;
         display: block;
-        padding: 2rem;
         font-family: 'Poppins', system-ui, sans-serif;
     }
 
-    .container {
-        width: calc(100% - var(--sidebar-width));
+    .dashboard-container {
+        width: 100%;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+    }
+
+    .content-wrapper {
+        flex: 1;
         margin-left: var(--sidebar-width);
-        padding: 0 2rem;
+        display: flex;
+        flex-direction: column;
+        width: calc(100% - var(--sidebar-width));
+        height: calc(100vh - var(--header-height));
+        position: relative;
+        overflow: hidden;
+    }
+
+    .main-content {
+        flex: 1;
+        padding: 24px;
+        margin: 0 auto;
+        width: 100%;
         box-sizing: border-box;
+        margin-top: var(--header-height);
+        padding-bottom: var(--footer-height);
+        overflow-y: auto;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
     }
 
     .header {
         display: flex;
         align-items: center;
+        justify-content: space-between;
         gap: 1rem;
         margin-bottom: 2rem;
         padding-bottom: 1rem;
         border-bottom: 2px solid var(--border-color);
+        top: 0;
+        background: var(--background-light);
+        z-index: 10;
     }
 
     h2 {
         margin: 0;
         font-size: 1.875rem;
         font-weight: 600;
-        color: var(--text-color);
+        color: var(--secondary-color);
     }
 
     .badge {
@@ -285,6 +317,10 @@ const styles = () => `
         color: var(--primary-color);
     }
 
+    .icon-btn.delete-btn:hover {
+        color: var(--danger-color);
+    }
+
     .icon-btn:disabled {
         opacity: 0.5;
         cursor: not-allowed;
@@ -427,8 +463,9 @@ const styles = () => `
     }
 
     @media (max-width: 768px) {
-        :host {
-            padding: 1rem;
+        .content-wrapper {
+            margin-left: 0;
+            width: 100%;
         }
         
         .header {

@@ -14,22 +14,26 @@ const createPageTemplate = (state) => {
     const { users, isLoading, error, editingUser } = state;
 
     return `
-        <header-element></header-element>
-        <sidebar-element></sidebar-element>
         <style>${styles()}</style>
-        <div class="container">
-            <div class="header">
-                <h2>Gestione Utenti</h2>
-                <span class="badge">${editingUser ? 'Modifica Utente' : 'Nuovo Utente'}</span>
+        <div class="dashboard-container">
+            <header-element></header-element>
+            <sidebar-element></sidebar-element>
+            
+            <div class="content-wrapper">
+                <div class="main-content">
+                    <div class="header">
+                        <h2>Gestione Utenti</h2>
+                        <span class="badge">${editingUser ? 'Modifica Utente' : 'Nuovo Utente'}</span>
+                    </div>
+                    
+                    ${error ? createErrorBanner(error) : ''}
+                    
+                    <div id="form-container"></div>
+                    <div id="table-container"></div>
+                </div>
             </div>
-            
-            ${error ? createErrorBanner(error) : ''}
-            
-            <div id="form-container"></div>
-            <div id="table-container"></div>
         </div>
         <footer-element></footer-element>
-
     `;
 };
 
