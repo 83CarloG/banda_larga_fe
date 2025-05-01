@@ -85,16 +85,16 @@ const styles = `
         background: #cccccc;
         cursor: not-allowed;
     }
-    .recovery-button {
+    .recovery-link {
         display: block;
         text-align: center;
         margin-top: 16px;
-        color: #fff;
+        color: var(--primary-color, #1877f2);
         text-decoration: none;
         font-size: 14px;
         font-weight: var(--font-weight-medium, 500);
     }
-    .recovery-button:hover {
+    .recovery-link:hover {
         text-decoration: underline;
     }
     .error {
@@ -133,7 +133,7 @@ const createTemplate = () => `
             </div>
             <button type="submit">Login</button>
         </form>
-        <button id="recoverEmailButton" type="button" class="recovery-button">Password dimenticata?</button>
+        <a id="recoverEmailLink" href="#" class="recovery-link">Password dimenticata</a>
         <div id="error" class="error"></div>
     </div>
 `;
@@ -147,7 +147,7 @@ const getFormElements = root => ({
     passwordInput: root.querySelector('#password'),
     submitButton: root.querySelector('button[type="submit"]'),
     errorDiv: root.querySelector('#error'),
-    recoverButton: root.querySelector('#recoverEmailButton')
+    recoverLink: root.querySelector('#recoverEmailLink')
 });
 
 /**
@@ -217,9 +217,10 @@ class LoginPageElement extends HTMLElement {
             handleSubmit(event, elements)
         );
 
-        elements.recoverButton.addEventListener('click', () =>
-            alert('Password recovery feature coming soon. Please contact support.')
-        );
+        elements.recoverLink.addEventListener('click', (event) => {
+            event.preventDefault();
+            alert('Password recovery feature coming soon. Please contact support.');
+        });
     }
 }
 
