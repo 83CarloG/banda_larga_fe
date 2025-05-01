@@ -207,7 +207,7 @@ const DashboardCharts = (config = {}) => {
 
         // Add legend
         const legendGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-        legendGroup.setAttribute('transform', `translate(${width / 2 - 80}, ${height - 30})`);
+        legendGroup.setAttribute('transform', `translate(${width / 2 - 200}, ${height - 30})`);
 
         data.forEach((d, i) => {
             // Legend color rectangle

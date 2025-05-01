@@ -1,4 +1,3 @@
-// src/components/CentersPage/styles.js
 "use strict";
 
 const styles = () => `
@@ -29,9 +28,9 @@ const styles = () => `
         display: flex;
         flex-direction: column;
         width: calc(100% - var(--sidebar-width));
-        height: calc(100vh - var(--header-height)); /* Use height instead of min-height */
-        position: relative; /* Add position relative */
-        overflow: hidden; /* Hide overflow on wrapper */
+        height: calc(100vh - var(--header-height));
+        position: relative;
+        overflow: hidden;
     }
 
     .main-content {
@@ -42,9 +41,9 @@ const styles = () => `
         box-sizing: border-box;
         margin-top: var(--header-height);
         padding-bottom: var(--footer-height);
-        overflow-y: auto; /* Add scrolling just to main content */
-        height: 100%; /* Fill available height */
-        position: absolute; /* Position absolute to prevent extending the container */
+        overflow-y: auto;
+        height: 100%;
+        position: absolute;
         top: 0;
         left: 0;
         right: 0;
@@ -59,7 +58,6 @@ const styles = () => `
         margin-bottom: 2rem;
         padding-bottom: 1rem;
         border-bottom: 2px solid var(--border-color);
-        position: sticky; /* Make header sticky */
         top: 0;
         background: var(--background-light);
         z-index: 10;
@@ -69,7 +67,7 @@ const styles = () => `
         margin: 0;
         font-size: 1.875rem;
         font-weight: 600;
-        color: var(--text-color);
+        color: var(--secondary-color);
     }
 
     .badge {
@@ -142,7 +140,7 @@ const styles = () => `
         border-color: var(--primary-color);
         box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
     }
-
+    
     .form-input,
     .form-textarea {
         padding: 0.625rem;
@@ -276,7 +274,7 @@ const styles = () => `
         margin-bottom: 2rem;
     }
 
-    /* Center Card Styles */
+    /* Center Card Styles - Enhanced */
     .center-card {
         background: white;
         border-radius: 0.75rem;
@@ -286,6 +284,7 @@ const styles = () => `
         transition: transform 0.2s, box-shadow 0.2s;
         display: flex;
         flex-direction: column;
+        height: 100%;
     }
 
     .center-card:hover {
@@ -299,12 +298,14 @@ const styles = () => `
         display: flex;
         justify-content: space-between;
         align-items: center;
+        background-color: #f8fafc;
+        height: 50px
     }
 
     .center-card-title {
-        font-size: 1.125rem;
+        font-size: 1.25rem;
         font-weight: 600;
-        color: var(--text-color);
+        color: var(--primary-color);
         margin: 0;
     }
 
@@ -313,12 +314,66 @@ const styles = () => `
         flex-grow: 1;
         display: flex;
         flex-direction: column;
-        gap: 0.75rem;
+        gap: 1rem;
+    }
+
+    /* Enhanced contact section */
+    .contact-section {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        padding: 0.75rem;
+        background-color: #f0f9ff;
+        border-radius: 0.5rem;
+        margin-top: 0.5rem;
+        border-left: 3px solid #3b82f6;
+    }
+
+    .contact-row {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .email-row {
+        padding-bottom: 0.5rem;
+        border-bottom: 1px dashed #cbd5e1;
+        margin-bottom: 0.25rem;
+    }
+
+    .contact-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #3b82f6;
+    }
+
+    .contact-value {
+        font-size: 1rem;
+        word-break: break-all;
+    }
+
+    .email-value {
+        font-weight: 500;
+        color: #1e40af;
+        text-decoration: none;
+    }
+
+    .email-value:hover {
+        text-decoration: underline;
+    }
+
+    /* Info section styling */
+    .info-section {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
     }
 
     .center-info-row {
         display: flex;
         gap: 0.5rem;
+        padding: 0.25rem 0;
     }
 
     .center-info-label {
@@ -332,18 +387,41 @@ const styles = () => `
         font-size: 1rem;
     }
 
+    /* Mission section */
+    .mission-section {
+        margin-top: 0.5rem;
+        padding: 0.75rem;
+        background-color: #f1f5f9;
+        border-radius: 0.5rem;
+    }
+
+    .mission-label {
+        font-weight: 600;
+        color: #334155;
+        display: block;
+        margin-bottom: 0.25rem;
+    }
+
+    .mission-value {
+        margin: 0;
+        font-size: 1rem;
+        line-height: 1.5;
+        color: #475569;
+    }
+
     .center-card-footer {
         padding: 0.75rem 1rem;
         border-top: 1px solid var(--border-color);
         display: flex;
-        justify-content: space-between;
+        justify-content: flex-end;
+        background-color: #f8fafc;
     }
 
     .center-types {
         display: flex;
         flex-wrap: wrap;
         gap: 0.5rem;
-        margin-top: 0.5rem;
+        margin-bottom: 0.5rem;
     }
 
     .center-type-tag {
@@ -374,6 +452,11 @@ const styles = () => `
 
     .status-inactive {
         background-color: var(--danger-color);
+    }
+
+    .status-text {
+        font-size: 0.75rem;
+        font-weight: 500;
     }
 
     .action-buttons {

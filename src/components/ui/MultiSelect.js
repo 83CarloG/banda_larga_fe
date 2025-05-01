@@ -274,7 +274,7 @@ const MultiSelect = (config = {}) => {
     helpText.style.fontSize = '1rem';
     helpText.style.marginTop = '0.25rem';
     helpText.style.display = 'block';
-    helpText.textContent = 'Click to select options';
+    helpText.textContent = 'Click per selezionare un centro';
     container.appendChild(helpText);
 
     // Force dropdown visibility initially then hide (helps with some browser rendering issues)
@@ -295,7 +295,7 @@ const MultiSelect = (config = {}) => {
     // Validation
     const validate = () => {
         if (required && selectedValues.length === 0) {
-            errorContainer.textContent = 'Please select at least one option';
+            errorContainer.textContent = 'Seleziona almeno un centro';
             errorContainer.style.display = 'block';
             return false;
         }

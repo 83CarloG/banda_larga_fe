@@ -1,11 +1,10 @@
-// components/CentersPage/centersGrid.js
 "use strict";
 
 const { createEmptyState, createLoadingIndicator } = require('./template');
 const { sanitize } = require('../../utils/security');
 
 /**
- * Creates a center card component
+ * Creates a center card component with improved email visibility
  */
 const CenterCard = (center, callbacks = {}) => {
     // Center card container
@@ -57,12 +56,61 @@ const CenterCard = (center, callbacks = {}) => {
 
     body.appendChild(typesContainer);
 
-    // Center info rows
+    // Improved Contact Section with Highlighted Email
+    const contactSection = document.createElement('div');
+    contactSection.className = 'contact-section';
+
+    // Email row with icon - Make this more prominent
+    const emailRow = document.createElement('div');
+    emailRow.className = 'contact-row email-row';
+
+    const emailIcon = document.createElement('span');
+    emailIcon.className = 'contact-icon';
+    emailIcon.innerHTML = `
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+            <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+        </svg>
+    `;
+
+    const emailValue = document.createElement('a');
+    emailValue.className = 'contact-value email-value';
+    emailValue.href = `mailto:${sanitize(center.email)}`;
+    emailValue.textContent = sanitize(center.email || 'No email provided');
+
+    emailRow.appendChild(emailIcon);
+    emailRow.appendChild(emailValue);
+    contactSection.appendChild(emailRow);
+
+    // Phone row with icon
+    const phoneRow = document.createElement('div');
+    phoneRow.className = 'contact-row';
+
+    const phoneIcon = document.createElement('span');
+    phoneIcon.className = 'contact-icon';
+    phoneIcon.innerHTML = `
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+            <path d="M20.01 15.38c-1.23 0-2.42-.2-3.53-.56-.35-.12-.74-.03-1.01.24l-1.57 1.97c-2.83-1.35-5.48-3.9-6.89-6.83l1.95-1.66c.27-.28.35-.67.24-1.02-.37-1.11-.56-2.3-.56-3.53 0-.54-.45-.99-.99-.99H4.19C3.65 3 3 3.24 3 3.99 3 13.28 10.73 21 20.01 21c.71 0 .99-.63.99-1.18v-3.45c0-.54-.45-.99-.99-.99z"/>
+        </svg>
+    `;
+
+    const phoneValue = document.createElement('span');
+    phoneValue.className = 'contact-value';
+    phoneValue.textContent = sanitize(center.phone || 'No phone provided');
+
+    phoneRow.appendChild(phoneIcon);
+    phoneRow.appendChild(phoneValue);
+    contactSection.appendChild(phoneRow);
+
+    // Add contact section to body
+    body.appendChild(contactSection);
+
+    // Center info rows - other info
+    const infoSection = document.createElement('div');
+    infoSection.className = 'info-section';
+
     const infoRows = [
         { label: 'Director', value: center.director },
         { label: 'Address', value: center.address },
-        { label: 'Phone', value: center.phone },
-        { label: 'Email', value: center.email },
         { label: 'Open Since', value: formatDate(center.openDate) }
     ];
 
@@ -81,26 +129,28 @@ const CenterCard = (center, callbacks = {}) => {
 
             row.appendChild(label);
             row.appendChild(value);
-            body.appendChild(row);
+            infoSection.appendChild(row);
         }
     });
 
+    body.appendChild(infoSection);
+
     // Mission preview (truncated)
     if (center.mission) {
-        const missionRow = document.createElement('div');
-        missionRow.className = 'center-info-row';
+        const missionSection = document.createElement('div');
+        missionSection.className = 'mission-section';
 
         const missionLabel = document.createElement('span');
-        missionLabel.className = 'center-info-label';
+        missionLabel.className = 'mission-label';
         missionLabel.textContent = 'Mission:';
 
-        const missionValue = document.createElement('span');
-        missionValue.className = 'center-info-value';
+        const missionValue = document.createElement('p');
+        missionValue.className = 'mission-value';
         missionValue.textContent = truncateText(sanitize(center.mission), 100);
 
-        missionRow.appendChild(missionLabel);
-        missionRow.appendChild(missionValue);
-        body.appendChild(missionRow);
+        missionSection.appendChild(missionLabel);
+        missionSection.appendChild(missionValue);
+        body.appendChild(missionSection);
     }
 
     card.appendChild(body);

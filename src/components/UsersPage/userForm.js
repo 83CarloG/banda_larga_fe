@@ -107,7 +107,7 @@ const UserForm = (config = {}) => {
     // Status checkbox
     const activeCheckbox = Checkbox({
         id: 'active',
-        label: 'Active Status',
+        label: 'Attivo',
         checked: formData.active,
         onChange: (value) => { formData.active = value; }
     });
@@ -121,28 +121,28 @@ const UserForm = (config = {}) => {
     });
 
     const firstNameGroup = FormGroup({
-        label: 'First Name',
+        label: 'Nome',
         for: 'first_name',
         component: firstNameInput,
         required: true
     });
 
     const lastNameGroup = FormGroup({
-        label: 'Last Name',
+        label: 'Cognome',
         for: 'last_name',
         component: lastNameInput,
         required: true
     });
 
     const roleGroup = FormGroup({
-        label: 'Role',
+        label: 'Ruolo',
         for: 'role_id',
         component: roleSelect,
         required: true
     });
 
     const centersGroup = FormGroup({
-        label: 'Centers',
+        label: 'Centri',
         for: 'center_ids',
         component: centersSelect,
         required: true,
@@ -216,7 +216,7 @@ const UserForm = (config = {}) => {
 
     // Add submit and cancel buttons
     const submitButton = Button({
-        text: user ? 'Save Changes' : 'Add User',
+        text: user ? 'Save Changes' : ' +   Aggiungi Utente',
         type: 'submit',
         variant: 'primary',
         onClick: handleSubmit

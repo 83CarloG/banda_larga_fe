@@ -37,7 +37,7 @@ const styles = () => `
         margin: 0;
         font-size: 1.875rem;
         font-weight: 600;
-        color: var(--text-color);
+        color: var(--secondary-color);
     }
 
     .role-badge {
@@ -88,8 +88,7 @@ const styles = () => `
 
     .main-content {
     flex: 1;
-    padding: 24px;
-    max-width: 1200px;
+    padding: 24px 0;
     margin: 0 auto;
     width: 100%;
     box-sizing: border-box;

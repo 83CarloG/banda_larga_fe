@@ -18,7 +18,7 @@ const createTemplate = (userData = {}) => `
                 </div>
                 <span class="username">${userData.first_name || 'User'} ${userData.last_name || ''}</span>
             </div>
-            <button id="logout">Logout</button>
+            <button id="logout">Esci</button>
         </div>
     </header>
 `;

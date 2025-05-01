@@ -73,12 +73,12 @@ const UsersTable = (config = {}) => {
         table.innerHTML = `
             <thead>
                 <tr>
-                    <th>Name</th>
+                    <th>Nome</th>
                     <th>Email</th>
-                    <th>Role</th>
-                    <th>Centers</th>
+                    <th>Ruolo</th>
+                    <th>Centri</th>
                     <th>Status</th>
-                    <th>Actions</th>
+                    <th>Azioni</th>
                 </tr>
             </thead>
             <tbody></tbody>
@@ -105,7 +105,7 @@ const UsersTable = (config = {}) => {
                 <td>${centersDisplay}</td>
                 <td>
                     <span class="status-pill ${isActive ? 'active' : 'inactive'}">
-                        ${isActive ? 'Active' : 'Inactive'}
+                        ${isActive ? 'Attivo ' : 'Inattivo'}
                     </span>
                 </td>
                 <td>

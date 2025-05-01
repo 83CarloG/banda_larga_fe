@@ -21,7 +21,10 @@ const createDashboardTemplate = (state, canViewAdvanced) => {
             
             <div class="content-wrapper">
                 <div class="main-content">
-
+                    <div class="dashboard-header">
+                        <h2>Home</h2>
+                      
+                    </div>
                     
                     ${error ? createErrorBanner(error) : ''}
                     
