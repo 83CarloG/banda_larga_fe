@@ -4,7 +4,7 @@
 const styles = () => `
     :host {
         display: block;
-        --footer-height: 64px;
+        --footer-height: 80px; /* Increased footer height to accommodate larger logo */
         font-family: var(--font-family, 'Poppins', sans-serif);
     }
 
@@ -15,8 +15,9 @@ const styles = () => `
         height: var(--footer-height);
         position: fixed;
         bottom: 0;
-        left: 0;
+        left: var(--sidebar-width); /* Start from where sidebar ends */
         right: 0;
+        width: calc(100% - var(--sidebar-width)); /* Adjust width to exclude sidebar */
         z-index: 98;
         box-sizing: border-box;
         display: flex;
@@ -25,12 +26,12 @@ const styles = () => `
 
     .footer-content {
         display: flex;
-        justify-content: space-around;
+        justify-content: space-between; /* Changed to space-between for equal spacing */
         align-items: center;
         max-width: 1200px;
         margin: 0 auto;
-        padding: 0 280px 0 0;
         width: 100%;
+        padding: 0;
     }
 
     .contact-item {
@@ -44,14 +45,24 @@ const styles = () => `
 
     .contact-item svg {
         flex-shrink: 0;
+    }
+
+    .contact-item .contact-icon {
         color: #65676b;
+    }
+
+    .contact-item .custom-logo {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 140px; /* Ensure logo has minimum width */
     }
 
     @media (max-width: 1024px) {
         .footer-content {
             flex-direction: column;
-            gap: 8px;
-            padding: 8px 0;
+            gap: 16px; /* Increased gap for better spacing in column layout */
+            padding: 16px 0;
         }
 
         .footer {
@@ -61,8 +72,13 @@ const styles = () => `
     }
 
     @media (max-width: 768px) {
+        .footer {
+            left: 0;
+            width: 100%; /* On mobile, footer takes full width when sidebar is hidden */
+        }
+        
         .footer-content {
-            padding: 8px;
+            padding: 16px 8px;
         }
 
         .contact-item {

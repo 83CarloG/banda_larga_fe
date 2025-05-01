@@ -94,10 +94,14 @@ const styles = () => `
 
     /* Main content area */
     .main-content {
-        margin-left: var(--sidebar-width);
-        padding: 20px;
-        min-height: calc(100vh - var(--header-height) - var(--footer-height));
-    }
+    flex: 1;
+    padding: 24px;
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+    box-sizing: border-box;
+    margin-bottom: var(--footer-height); /* Additional margin to prevent content from being hidden by footer */
+}
 
     @media (max-width: 768px) {
         .sidebar {
