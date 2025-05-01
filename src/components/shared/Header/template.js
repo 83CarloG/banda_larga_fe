@@ -4,7 +4,6 @@
 const createTemplate = (userData = {}) => `
     <header class="header">
         <div class="logo-section">
-            <div class="logo-placeholder">BL</div>
         </div>
         <div class="title">BANDA LARGA</div>
         <div class="user-section">

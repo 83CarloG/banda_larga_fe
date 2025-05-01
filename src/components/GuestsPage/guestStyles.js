@@ -44,7 +44,7 @@ const styles = () => `
         color: var(--text-color);
         padding: 0.25rem 0.75rem;
         border-radius: 1rem;
-        font-size: 0.875rem;
+        font-size: 1rem;
         border: 1px solid var(--border-color);
     }
 
@@ -170,7 +170,7 @@ const styles = () => `
     .guests-table th {
         background: var(--background-light);
         font-weight: 600;
-        font-size: 0.875rem;
+        font-size: 1rem;
         text-transform: uppercase;
         letter-spacing: 0.05em;
     }
@@ -179,7 +179,7 @@ const styles = () => `
         display: inline-block;
         padding: 0.25rem 0.75rem;
         border-radius: 1rem;
-        font-size: 0.875rem;
+        font-size: 1rem;
         font-weight: 500;
     }
 
@@ -300,7 +300,7 @@ const styles = () => `
     gap: 0.5rem;
     padding: 0.75rem 1rem;
     border-radius: 0.5rem;
-    font-size: 0.875rem;
+    font-size: 1rem;
     font-weight: 500;
     cursor: pointer;
     transition: background-color 0.2s;
@@ -393,7 +393,7 @@ const styles = () => `
     }
     
     .guest-meta {
-        font-size: 0.875rem;
+        font-size: 1rem;
         color: #64748b;
         margin-top: 0.25rem;
         display: flex;
@@ -493,7 +493,7 @@ const styles = () => `
     }
     
     .field-value {
-        font-size: 0.875rem;
+        font-size: 1rem;
     }
     
     .note-row {
@@ -569,7 +569,7 @@ const styles = () => `
     
     .history-date-header {
         font-weight: 600;
-        font-size: 0.875rem;
+        font-size: 1rem;
         padding: 0.5rem;
         background-color: #f1f5f9;
         border-radius: 0.25rem 0.25rem 0 0;
@@ -622,7 +622,7 @@ const styles = () => `
     .entry-content {
         border-radius: 0.25rem;
         padding: 0.5rem;
-        font-size: 0.875rem;
+        font-size: 1rem;
     }
     
     .entry-content.modified {
@@ -661,7 +661,7 @@ const styles = () => `
     }
     
     .entry-value {
-        font-size: 0.875rem;
+        font-size: 1rem;
     }
     
     .added-value {

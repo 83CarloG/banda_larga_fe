@@ -42,7 +42,7 @@ const styles = () => `
         color: var(--text-color);
         padding: 0.25rem 0.75rem;
         border-radius: 1rem;
-        font-size: 0.875rem;
+        font-size: 1rem;
         border: 1px solid var(--border-color);
     }
 
@@ -73,7 +73,7 @@ const styles = () => `
     }
 
     label {
-        font-size: 0.875rem;
+        font-size: 1rem;
         font-weight: 500;
         color: var(--text-color);
     }
@@ -241,7 +241,7 @@ const styles = () => `
     .users-table th {
         background: var(--background-light);
         font-weight: 600;
-        font-size: 0.875rem;
+        font-size: 1rem;
         text-transform: uppercase;
         letter-spacing: 0.05em;
     }
@@ -250,7 +250,7 @@ const styles = () => `
         display: inline-block;
         padding: 0.25rem 0.75rem;
         border-radius: 1rem;
-        font-size: 0.875rem;
+        font-size: 1rem;
         font-weight: 500;
     }
 
@@ -402,7 +402,7 @@ const styles = () => `
         background-color: var(--background-light);
         padding: 0.25rem 0.5rem;
         border-radius: 0.25rem;
-        font-size: 0.875rem;
+        font-size: 1rem;
         display: flex;
         align-items: center;
         gap: 0.25rem;

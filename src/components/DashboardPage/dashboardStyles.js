@@ -43,7 +43,7 @@ const styles = () => `
     .role-badge {
         padding: 0.25rem 0.75rem;
         border-radius: 1rem;
-        font-size: 0.875rem;
+        font-size: 1rem;
         font-weight: 500;
     }
 
@@ -134,7 +134,7 @@ const styles = () => `
 
     .stat-card-title {
         color: var(--text-secondary);
-        font-size: 0.875rem;
+        font-size: 1rem;
         font-weight: 500;
         margin: 0;
     }
@@ -176,7 +176,7 @@ const styles = () => `
     }
 
     .stat-card-subtitle {
-        font-size: 0.875rem;
+        font-size: 1rem;
         color: var(--text-secondary);
         margin-top: 0.25rem;
     }
@@ -245,7 +245,7 @@ const styles = () => `
         margin-top: 1rem;
         text-align: center;
         color: #4b5563;
-        font-size: 0.875rem;
+        font-size: 1rem;
     }
 
     @media (max-width: 1024px) {

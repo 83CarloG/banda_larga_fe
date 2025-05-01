@@ -7,7 +7,7 @@
 :root {
     /* Colors (keep existing color variables) */
     --primary-color: #406B7E;
-    --secondary-color: #42b72a;
+    --secondary-color: #D36D48;
     --danger-color: #dc3545;
     --warning-color: #ffc107;
     --success-color: #16a34a;
@@ -26,13 +26,13 @@
     --sidebar-width: 160px;
 
     /* Font sizes */
-    --font-size-xs: 0.75rem;   /* 12px */
-    --font-size-sm: 0.875rem;  /* 14px */
-    --font-size-base: 1rem;    /* 16px */
-    --font-size-lg: 1.125rem;  /* 18px */
-    --font-size-xl: 1.25rem;   /* 20px */
-    --font-size-2xl: 1.5rem;   /* 24px */
-    --font-size-3xl: 1.875rem; /* 30px */
+    --font-size-xs: 1rem;      /* 16px - minimum size for small text */
+    --font-size-sm: 1rem;      /* 16px - minimum size for regular text */
+    --font-size-base: 1rem;    /* 16px - unchanged */
+    --font-size-lg: 1.125rem;  /* 18px - unchanged */
+    --font-size-xl: 1.25rem;   /* 20px - minimum size for titles */
+    --font-size-2xl: 1.5rem;   /* 24px - unchanged */
+    --font-size-3xl: 1.875rem; /* 30px - unchanged */
 
     /* Border radius */
     --border-radius-sm: 0.25rem;

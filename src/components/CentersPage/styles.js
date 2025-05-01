@@ -45,7 +45,7 @@ const styles = () => `
         color: var(--text-color);
         padding: 0.25rem 0.75rem;
         border-radius: 1rem;
-        font-size: 0.875rem;
+        font-size: 1rem;
         border: 1px solid var(--border-color);
     }
 
@@ -85,7 +85,7 @@ const styles = () => `
     }
 
     label {
-        font-size: 0.875rem;
+        font-size: 1rem;
         font-weight: 500;
         color: var(--text-color);
     }
@@ -291,13 +291,13 @@ const styles = () => `
 
     .center-info-label {
         font-weight: 500;
-        font-size: 0.875rem;
+        font-size: 1rem;
         color: #64748b;
         min-width: 80px;
     }
 
     .center-info-value {
-        font-size: 0.875rem;
+        font-size: 1rem;
     }
 
     .center-card-footer {

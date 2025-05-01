@@ -30,18 +30,7 @@ const styles = () => `
         margin-left: 280px;
     }
 
-    .logo-placeholder {
-        width: 40px;
-        height: 40px;
-        background-color: #e4e6eb;
-        border-radius: 8px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: #65676b;
-        font-weight: var(--font-weight-bold, 700);
-    }
-
+    
     .title {
         position: absolute;
         left: 50%;
@@ -85,7 +74,7 @@ const styles = () => `
     }
 
     .username {
-        font-size: 15px;
+        font-size: 16px; /* Increased to minimum */
         font-weight: var(--font-weight-medium, 500);
         color: #050505;
     }

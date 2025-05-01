@@ -101,7 +101,7 @@ const MultiSelect = (config = {}) => {
             chip.style.backgroundColor = 'var(--background-light)';
             chip.style.padding = '0.25rem 0.5rem';
             chip.style.borderRadius = '0.25rem';
-            chip.style.fontSize = '0.875rem';
+            chip.style.fontSize = '1rem';
             chip.style.display = 'flex';
             chip.style.alignItems = 'center';
 
@@ -271,7 +271,7 @@ const MultiSelect = (config = {}) => {
     const helpText = document.createElement('small');
     helpText.className = 'multi-select-help';
     helpText.style.color = '#64748b';
-    helpText.style.fontSize = '0.75rem';
+    helpText.style.fontSize = '1rem';
     helpText.style.marginTop = '0.25rem';
     helpText.style.display = 'block';
     helpText.textContent = 'Click to select options';

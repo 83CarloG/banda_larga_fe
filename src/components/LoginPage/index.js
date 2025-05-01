@@ -39,7 +39,7 @@ const styles = `
     }
     .login-subtitle {
         font-size: 14px;
-        color: var(--text-secondary, #64748b);
+        color: var(--text-secondary, ##D36D48);
     }
     .form-group {
         margin-bottom: 20px;
