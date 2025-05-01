@@ -65,27 +65,28 @@ class DashboardPageElement extends StatefulComponent {
 
             // Mock data for demonstration
             const statsData = {
-                activeUsers: 45,
-                totalCenters: 12,
+                activeUsers: 16,
+                totalCenters: 6,
                 pendingTasks: 8,
                 recentActivity: 24
             };
 
             const chartData = {
                 userActivity: [
-                    { month: 'Jan', count: 12 },
+                    { month: 'Gen', count: 12 },
                     { month: 'Feb', count: 19 },
                     { month: 'Mar', count: 15 },
                     { month: 'Apr', count: 22 },
-                    { month: 'May', count: 30 },
-                    { month: 'Jun', count: 25 }
+                    { month: 'Mag', count: 30 },
+                    { month: 'Giu', count: 25 }
                 ],
                 centerDistribution: [
-                    { name: 'Center A', value: 35 },
-                    { name: 'Center B', value: 25 },
-                    { name: 'Center C', value: 20 },
-                    { name: 'Center D', value: 15 },
-                    { name: 'Center E', value: 5 }
+                    { name: 'Centro A', value: 35 },
+                    { name: 'Centro B', value: 25 },
+                    { name: 'Centro C', value: 20 },
+                    { name: 'Centro D', value: 10 },
+                    { name: 'Centro E', value: 5 },
+                    { name: 'Centro F', value: 5 }
                 ]
             };
 

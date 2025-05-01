@@ -106,7 +106,7 @@ const styles = () => `
 
     .charts-container {
         display: grid;
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));;
         gap: 1.5rem;
         margin-bottom: 2rem;
     }

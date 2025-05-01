@@ -76,22 +76,22 @@ const DashboardStats = (config = {}) => {
 
         // Users card
         container.appendChild(
-            createStatCard('Active Users', stats.activeUsers, 'Total registered users', 'users')
+            createStatCard('Utenti Attivi', stats.activeUsers, '', 'users')
         );
 
         // Centers card
         container.appendChild(
-            createStatCard('Centers', stats.totalCenters, 'Operational centers', 'centers')
+            createStatCard('Centri', stats.totalCenters, '', 'centers')
         );
 
         // Tasks card
         container.appendChild(
-            createStatCard('Pending Tasks', stats.pendingTasks, 'Tasks awaiting completion', 'tasks')
+            createStatCard('Ospiti Registrati', stats.pendingTasks, '', 'tasks')
         );
 
         // Activity card
         container.appendChild(
-            createStatCard('Recent Activity', stats.recentActivity, 'Actions in the last 24 hours', 'activity')
+            createStatCard('Azioni Recenti', stats.recentActivity, 'Azioni nelle ultime 24h', 'activity')
         );
     };
 

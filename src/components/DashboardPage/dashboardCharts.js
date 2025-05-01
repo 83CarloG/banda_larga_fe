@@ -244,7 +244,7 @@ const DashboardCharts = (config = {}) => {
 
         // Activity chart
         const { card: activityCard, chartContainer: activityChartContainer } = createChartCard(
-            'User Activity (Last 6 Months)',
+            'Attività degli utenti (Ultimi 6 msesi)',
             'activity-chart',
             'bar'
         );
@@ -252,7 +252,7 @@ const DashboardCharts = (config = {}) => {
 
         // Center distribution chart
         const { card: distributionCard, chartContainer: distributionChartContainer } = createChartCard(
-            'Center Distribution',
+            'Distribuzione ospiti',
             'distribution-chart',
             'pie'
         );
