@@ -1,11 +1,14 @@
 // components/shared/Header/template.js
 "use strict";
-
+const logoImage = require('/src/assets/img/4@2x.png');
 const createTemplate = (userData = {}) => `
     <header class="header">
         <div class="logo-section">
         </div>
-        <div class="title">BANDA LARGA</div>
+        <div class="header-logo">
+            <!-- Using an img tag instead of inline SVG for simplicity -->
+            <img src=${logoImage} alt="Banda Larga" class="banda-larga-logo" />
+        </div>
         <div class="user-section">
             <div class="user-info">
                 <div class="avatar">

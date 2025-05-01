@@ -4,7 +4,7 @@
 const styles = () => `
     :host {
         display: block;
-        --header-height: 56px;
+        --header-height: 64px;
         --footer-height: 64px;
         --sidebar-width: 160px;
         --primary-color: #1877f2;

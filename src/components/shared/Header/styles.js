@@ -4,7 +4,7 @@
 const styles = () => `
     :host {
         display: block;
-        --header-height: 56px;
+        --header-height: 80px;
         font-family: var(--font-family, 'Poppins', sans-serif);
     }
 
@@ -30,16 +30,18 @@ const styles = () => `
         margin-left: 280px;
     }
 
-    
-    .title {
+    .header-logo {
         position: absolute;
         left: 50%;
         transform: translateX(-50%);
-        color: var(--primary-color, #1877f2);
-        font-size: 24px;
-        font-weight: var(--font-weight-bold, 700);
-        white-space: nowrap;
-        letter-spacing: 0.5px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .banda-larga-logo {
+        height: 110px;
+        width: auto;
     }
 
     .user-section {
@@ -80,8 +82,8 @@ const styles = () => `
     }
 
     #logout {
-        background-color: #e4e6eb;
-        color: #050505;
+        background-color: #406B7E;
+        color: #fff;
         border: none;
         padding: 8px 12px;
         border-radius: 6px;
@@ -93,7 +95,7 @@ const styles = () => `
     }
 
     #logout:hover {
-        background-color: #d8dadf;
+        background-color: #D36D48;
     }
 
     @media (max-width: 768px) {
@@ -105,8 +107,14 @@ const styles = () => `
             display: none;
         }
 
-        .title {
-            font-size: 20px;
+        .header-logo {
+            left: auto;
+            transform: none;
+            margin-left: 10px;
+        }
+        
+        .banda-larga-logo {
+            height: 32px;
         }
     }
 `;
