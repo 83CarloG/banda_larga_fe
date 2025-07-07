@@ -28,8 +28,6 @@ const styles = () => `
         display: flex;
         align-items: center;
         gap: 1rem;
-        margin-bottom: 2rem;
-        padding-bottom: 1rem;
         border-bottom: 2px solid var(--border-color);
     }
 
@@ -100,8 +98,8 @@ const styles = () => `
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
         gap: 1.5rem;
-        margin-bottom: 2rem;
-        margin-top: 2rem;
+        margin-bottom: 1rem;
+        margin-top: 1rem;
     }
 
     .charts-container {

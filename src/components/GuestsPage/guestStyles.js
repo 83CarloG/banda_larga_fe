@@ -184,6 +184,121 @@ const styles = () => `
         margin-bottom: 1.5rem;
     }
 
+.search-section {
+    margin-bottom: 1.5rem;
+}
+
+.search-container {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-end;
+    width: 100%;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+}
+
+.search-field {
+    flex: 1;
+    min-width: 250px;
+}
+
+.search-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.search-results-container {
+    background: white;
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    border: 1px solid var(--border-color);
+    margin-top: 1rem;
+}
+
+.search-results-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.search-results-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--text-color);
+    margin: 0;
+}
+
+.search-clear {
+    background: none;
+    color: var(--primary-color);
+    border: none;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.search-clear:hover {
+    text-decoration: underline;
+}
+
+.result-item {
+    padding: 1rem;
+    border-bottom: 1px solid var(--border-color);
+    transition: background-color 0.2s;
+    cursor: pointer;
+}
+
+.result-item:last-child {
+    border-bottom: none;
+}
+
+.result-item:hover {
+    background-color: var(--background-light);
+}
+
+.guest-header {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    margin-bottom: 0.375rem;
+}
+
+.guest-id {
+    font-weight: 600;
+    color: var(--primary-color);
+}
+
+.guest-name {
+    font-weight: 600;
+    font-size: 1.05rem;
+}
+
+.guest-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 0.25rem;
+    color: var(--text-muted);
+    font-size: 0.875rem;
+}
+
+.meta-item {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+}
+
+.meta-icon {
+    opacity: 0.7;
+}
+
     .table-responsive {
         overflow-x: auto;
         border-radius: 0.75rem;
@@ -427,6 +542,7 @@ const styles = () => `
     }
     
     .guest-info h2 {
+        color: var(--primary-color);
         margin: 0;
         font-size: 1.5rem;
     }
@@ -478,6 +594,9 @@ const styles = () => `
     
     .tab-icon {
         font-size: 1.125rem;
+    }
+    .tab-text {
+        font-size: var(--font-size-base);
     }
     
     /* Split view layout */

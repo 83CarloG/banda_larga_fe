@@ -244,7 +244,7 @@ const DashboardCharts = (config = {}) => {
 
         // Activity chart
         const { card: activityCard, chartContainer: activityChartContainer } = createChartCard(
-            'Attività degli utenti (Ultimi 6 msesi)',
+            'Attività degli utenti (Ultimi 6 mesi)',
             'activity-chart',
             'bar'
         );

@@ -146,7 +146,7 @@ const UserForm = (config = {}) => {
         for: 'center_ids',
         component: centersSelect,
         required: true,
-        helpText: 'Select at least one center'
+        helpText: ''
     });
 
     // Create form grid layout

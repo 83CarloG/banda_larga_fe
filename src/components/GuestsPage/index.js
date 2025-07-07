@@ -361,6 +361,7 @@ class GuestsPageElement extends StatefulComponent {
         const tableContainer = this.shadowRoot.querySelector('#table-container');
         if (!tableContainer) return;
 
+        console.log(guests)
         const guestsTable = GuestsTable({
             guests,
             isLoading,

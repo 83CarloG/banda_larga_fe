@@ -5,6 +5,7 @@
   "main": "src/app/app.js",
   "scripts": {
     "dev": "webpack serve --config webpack.config.js --mode development",
+    "dev:online": "nodemon --exec \"npm run dev\"",
     "build": "webpack --config webpack.config.js --mode production"
   },
   "dependencies": {

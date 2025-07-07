@@ -1,8 +1,8 @@
-// guestsTable.js
+// guestsTable.js - Updated with enhanced guest information display
 "use strict";
 
 /**
- * Creates a guests table component
+ * Creates a guests table component with improved visual hierarchy
  */
 const GuestsTable = (config = {}) => {
     // Table state
@@ -29,7 +29,7 @@ const GuestsTable = (config = {}) => {
 
     // Format guest address
     function formatAddress(guest) {
-        return guest.guest_address || 'N/A';
+        return `${guest.casa_residenza_indirizzo}, ${guest.casa_residenza_comune}` || 'N/A';
     }
 
     // Render table
@@ -63,14 +63,13 @@ const GuestsTable = (config = {}) => {
         table.innerHTML = `
             <thead>
                 <tr>
-                    <th>ID</th>
-                    <th>Name</th>
-                    <th>Fiscal Code</th>
-                    <th>Address</th>
-                    <th>Phone</th>
-                    <th>Email</th>
-                    <th>Status</th>
-                    <th>Actions</th>
+                    <th width="10%">ID</th>
+                    <th width="20%">Nome Completo</th>
+                    <th width="15%">CF</th>
+                    <th width="25%">Indirizzo</th>
+                    <th width="10%">Telefono</th>
+                    <th width="10%">Status</th>
+                    <th width="10%">Azioni</th>
                 </tr>
             </thead>
             <tbody></tbody>
@@ -87,34 +86,33 @@ const GuestsTable = (config = {}) => {
             const address = formatAddress(guest);
             const isActive = guest.active;
 
-            // Create row HTML
+            // Create row HTML with enhanced guest information (bold for key fields)
             tr.innerHTML = `
-                <td>${guest.guest_code || guest.id}</td>
-                <td>${name}</td>
-                <td>${guest.guest_fiscal_code || 'N/A'}</td>
+                <td><strong class="guest-id">${guest.guest_code || guest.id}</strong></td>
+                <td><strong class="guest-name">${name}</strong></td>
+                <td><strong class="guest-fiscal-code">${guest.guest_fiscal_code || 'N/A'}</strong></td>
                 <td>${address}</td>
                 <td>${guest.guest_phone_number || 'N/A'}</td>
-                <td>${guest.guest_email || 'N/A'}</td>
                 <td>
                     <span class="status-pill ${isActive ? 'active' : 'inactive'}">
-                        ${isActive ? 'Active' : 'Inactive'}
+                        ${isActive ? 'Attivo' : 'Inattivo'}
                     </span>
                 </td>
                 <td>
                     <div class="action-buttons">
                         <button class="icon-btn view-btn" data-id="${guest.id}" title="View Guest">
                             <svg class="icon" viewBox="0 0 24 24">
-                                <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
+                                <path fill="currentColor" d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
                             </svg>
                         </button>
                         <button class="icon-btn edit-btn" data-id="${guest.id}" title="Edit Guest">
                             <svg class="icon" viewBox="0 0 24 24">
-                                <path d="M20.71 7.04C21.1 6.65 21.1 6 20.71 5.63L18.37 3.29C18 2.9 17.35 2.9 16.96 3.29L15.12 5.12L18.87 8.87M3 17.25V21H6.75L17.81 9.93L14.06 6.18L3 17.25Z"/>
+                                <path fill="currentColor" d="M20.71 7.04C21.1 6.65 21.1 6 20.71 5.63L18.37 3.29C18 2.9 17.35 2.9 16.96 3.29L15.12 5.12L18.87 8.87M3 17.25V21H6.75L17.81 9.93L14.06 6.18L3 17.25Z"/>
                             </svg>
                         </button>
                         <button class="icon-btn delete-btn" data-id="${guest.id}" title="Delete Guest">
                             <svg class="icon" viewBox="0 0 24 24">
-                                <path d="M19 4H15.5L14.5 3H9.5L8.5 4H5V6H19M6 19C6 20.1 6.9 21 8 21H16C17.1 21 18 20.1 18 19V7H6V19Z"/>
+                                <path fill="currentColor" d="M19 4H15.5L14.5 3H9.5L8.5 4H5V6H19M6 19C6 20.1 6.9 21 8 21H16C17.1 21 18 20.1 18 19V7H6V19Z"/>
                             </svg>
                         </button>
                     </div>
@@ -137,6 +135,21 @@ const GuestsTable = (config = {}) => {
         // Clear and add table
         container.innerHTML = '';
         container.appendChild(table);
+
+        // Add custom styles for enhanced guest information
+        const style = document.createElement('style');
+        style.textContent = `
+            .guest-id, .guest-name, .guest-fiscal-code {
+                font-weight: 600;
+                font-size: 1.05rem;
+                color: var(--text-color);
+            }
+            
+            .guests-table td {
+                padding: 0.875rem 1rem;
+            }
+        `;
+        container.appendChild(style);
     }
 
     // Initial render
