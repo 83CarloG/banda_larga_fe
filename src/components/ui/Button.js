@@ -1,4 +1,4 @@
-"use strict";
+require('./Button.css');
 
 /**
  * Creates a reusable button component that matches the existing styling

@@ -2,7 +2,7 @@
 "use strict";
 
 const { sanitize } = require('../../utils/security');
-const styles = require('./styles');
+const centersPageStyles = require('./styles');
 
 /**
  * Creates the main page template
@@ -13,7 +13,7 @@ const createPageTemplate = (state) => {
     const { centers, isLoading, error, editingCenter } = state;
 
     return `
-        <style>${styles()}</style>
+        <style>${centersPageStyles}</style>
         <div class="dashboard-container">
             <header-element></header-element>
             <sidebar-element></sidebar-element>

@@ -1,3 +1,4 @@
+require('./UsersTable.css');
 // usersTable.js - Updated with centers display
 "use strict";
 

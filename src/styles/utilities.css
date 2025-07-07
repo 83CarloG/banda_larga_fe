@@ -1,0 +1,10 @@
+.flex { display: flex; }
+.flex-col { flex-direction: column; }
+.flex-center { justify-content: center; align-items: center; }
+.inline-flex { display: inline-flex; }
+.mt-1 { margin-top: var(--spacing-sm); }
+.mb-2 { margin-bottom: var(--spacing-md); }
+.text-center { text-align: center; }
+.hidden { display: none !important; }
+.gap-sm { gap: var(--spacing-sm); }
+.gap-md { gap: var(--spacing-md); } 

@@ -18,6 +18,7 @@ class CentersPageElement extends StatefulComponent {
         // Initialize state
         this.initState({
             centers: [],
+            centerTypes: [],
             isLoading: true,
             error: null,
             editingCenter: null
@@ -73,14 +74,17 @@ class CentersPageElement extends StatefulComponent {
     async fetchCenters() {
         try {
             this.setState({ isLoading: true, error: null });
-            const centers = await centerService.fetchCenters();
+            const { centers, centerTypes } = await centerService.fetchCenters();
 
             // Sanitize center data
             const sanitizedCenters = Array.isArray(centers)
                 ? centers.map(center => sanitizeObject(center))
                 : [];
+            const sanitizedTypes = Array.isArray(centerTypes)
+                ? centerTypes.map(type => sanitizeObject(type))
+                : [];
 
-            this.setState({ centers: sanitizedCenters, isLoading: false });
+            this.setState({ centers: sanitizedCenters, centerTypes: sanitizedTypes, isLoading: false });
         } catch (error) {
             this.setState({
                 error: error.message || 'Failed to fetch centers',
@@ -170,7 +174,7 @@ class CentersPageElement extends StatefulComponent {
     }
 
     setupComponents() {
-        const { centers, editingCenter, isLoading } = this.getState();
+        const { centers, centerTypes, editingCenter, isLoading } = this.getState();
 
         // Get container elements
         const formContainer = this.shadowRoot.querySelector('#form-container');
@@ -188,6 +192,7 @@ class CentersPageElement extends StatefulComponent {
         if (editingCenter) {
             const centerForm = CenterForm({
                 center: editingCenter,
+                centerTypes,
                 onSubmit: this.handleSubmitSuccess,
                 onCancel: this.handleCancel,
                 onError: this.handleSubmitError
@@ -201,6 +206,7 @@ class CentersPageElement extends StatefulComponent {
         // Create or update grid component
         const centersGrid = CentersGrid({
             centers,
+            centerTypes,
             isLoading,
             onEdit: this.handleEdit,
             onDelete: this.handleDelete

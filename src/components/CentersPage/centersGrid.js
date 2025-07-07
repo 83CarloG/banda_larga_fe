@@ -2,14 +2,20 @@
 
 const { createEmptyState, createLoadingIndicator } = require('./template');
 const { sanitize } = require('../../utils/security');
+const centersGridStyles = require('./centersGridStyles');
 
 /**
  * Creates a center card component with improved email visibility
  */
-const CenterCard = (center, callbacks = {}) => {
+const CenterCard = (center, centerTypes = [], callbacks = {}) => {
+    // Helper to get type label from ID
+    function getTypeLabel(typeId) {
+        const found = centerTypes.find(t => t.id == typeId || t.type_name == typeId);
+        return found ? found.type_label : typeId;
+    }
     // Center card container
     const card = document.createElement('div');
-    card.className = 'center-card';
+    card.className = 'card center-card';
     card.dataset.id = center.id;
 
     // Card header with title
@@ -49,7 +55,7 @@ const CenterCard = (center, callbacks = {}) => {
         center.type.forEach(type => {
             const typeTag = document.createElement('span');
             typeTag.className = 'center-type-tag';
-            typeTag.textContent = sanitize(type);
+            typeTag.textContent = sanitize(getTypeLabel(type));
             typesContainer.appendChild(typeTag);
         });
     }
@@ -165,7 +171,7 @@ const CenterCard = (center, callbacks = {}) => {
 
     // Edit button
     const editButton = document.createElement('button');
-    editButton.className = 'icon-btn edit-btn';
+    editButton.className = 'button icon-btn edit-btn';
     editButton.setAttribute('aria-label', 'Edit center');
     editButton.innerHTML = `
         <svg class="icon" viewBox="0 0 24 24">
@@ -178,7 +184,7 @@ const CenterCard = (center, callbacks = {}) => {
 
     // Delete button
     const deleteButton = document.createElement('button');
-    deleteButton.className = 'icon-btn delete-btn';
+    deleteButton.className = 'button icon-btn delete-btn';
     deleteButton.setAttribute('aria-label', 'Delete center');
     deleteButton.innerHTML = `
         <svg class="icon" viewBox="0 0 24 24">
@@ -232,6 +238,7 @@ const CentersGrid = (config = {}) => {
     // Grid state
     const state = {
         centers: Array.isArray(config.centers) ? [...config.centers] : [],
+        centerTypes: Array.isArray(config.centerTypes) ? [...config.centerTypes] : [],
         isLoading: config.isLoading || false
     };
 
@@ -245,8 +252,19 @@ const CentersGrid = (config = {}) => {
     const container = document.createElement('div');
     container.className = 'centers-container';
 
+    // Inject styles if not already present
+    function injectStyles() {
+        if (!container.querySelector('style[data-centers-grid]')) {
+            const style = document.createElement('style');
+            style.setAttribute('data-centers-grid', 'true');
+            style.textContent = centersGridStyles;
+            container.prepend(style);
+        }
+    }
+
     // Render grid
     function render() {
+        injectStyles();
         // If loading, show spinner
         if (state.isLoading) {
             container.innerHTML = createLoadingIndicator();
@@ -280,7 +298,7 @@ const CentersGrid = (config = {}) => {
 
         // Create center cards
         state.centers.forEach(center => {
-            const card = CenterCard(center, callbacks);
+            const card = CenterCard(center, state.centerTypes, callbacks);
             grid.appendChild(card);
         });
 

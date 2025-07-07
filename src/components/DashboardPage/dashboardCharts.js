@@ -43,15 +43,18 @@ const DashboardCharts = (config = {}) => {
     const renderBarChart = (container, data) => {
         if (!data || !data.length) return;
 
-        // Calculate chart dimensions and scales
-        const width = container.clientWidth;
-        const height = container.clientHeight;
+        // Fallback dimensions if container is not sized yet
+        const width = Math.max(container.clientWidth, 320);
+        const height = Math.max(container.clientHeight, 200);
         const padding = { top: 20, right: 20, bottom: 40, left: 40 };
-        const chartWidth = width - padding.left - padding.right;
-        const chartHeight = height - padding.top - padding.bottom;
+        const chartWidth = Math.max(width - padding.left - padding.right, 100);
+        const chartHeight = Math.max(height - padding.top - padding.bottom, 100);
 
         // Calculate max value for scaling
-        const maxValue = Math.max(...data.map(d => d.count));
+        const maxValue = Math.max(...data.map(d => d.count), 1); // Avoid division by zero
+
+        // Calculate bar width
+        const barWidth = Math.max(chartWidth / data.length - 10, 10);
 
         // Create SVG element
         const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
@@ -63,12 +66,9 @@ const DashboardCharts = (config = {}) => {
         chartGroup.setAttribute('transform', `translate(${padding.left}, ${padding.top})`);
         svg.appendChild(chartGroup);
 
-        // Calculate bar width
-        const barWidth = chartWidth / data.length - 10;
-
         // Create bars
         data.forEach((d, i) => {
-            const barHeight = (d.count / maxValue) * chartHeight;
+            const barHeight = Math.max((d.count / maxValue) * chartHeight, 0);
             const x = i * (barWidth + 10);
             const y = chartHeight - barHeight;
 

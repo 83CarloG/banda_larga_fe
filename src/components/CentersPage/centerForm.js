@@ -14,7 +14,7 @@ const MultiSelect = (config = {}) => {
     const {
         id = 'type',
         value = [],
-        options = [],
+        options = [], // now array of {label, value}
         onChange = () => {}
     } = config;
 
@@ -38,11 +38,13 @@ const MultiSelect = (config = {}) => {
     const optionsContainer = document.createElement('div');
     optionsContainer.className = 'multi-select-options';
 
-    // Track selected values
+    // Track selected values (array of values)
     let selectedValues = Array.isArray(value) ? [...value] : [];
 
     // Create checkboxes for each option
-    options.forEach(option => {
+    options.forEach(optionObj => {
+        const option = typeof optionObj === 'object' ? optionObj.value : optionObj;
+        const labelText = typeof optionObj === 'object' ? optionObj.label : optionObj;
         const isChecked = selectedValues.includes(option);
 
         const optContainer = document.createElement('div');
@@ -56,7 +58,7 @@ const MultiSelect = (config = {}) => {
 
         const optLabel = document.createElement('label');
         optLabel.htmlFor = `${id}-${option}`;
-        optLabel.textContent = option;
+        optLabel.textContent = labelText;
 
         checkbox.addEventListener('change', () => {
             if (checkbox.checked) {
@@ -86,7 +88,8 @@ const MultiSelect = (config = {}) => {
             selectedValues = [...newValues];
 
             // Update checkbox states
-            options.forEach(option => {
+            options.forEach(optionObj => {
+                const option = typeof optionObj === 'object' ? optionObj.value : optionObj;
                 const checkbox = optionsContainer.querySelector(`#${id}-${option}`);
                 if (checkbox) {
                     checkbox.checked = selectedValues.includes(option);
@@ -102,6 +105,7 @@ const MultiSelect = (config = {}) => {
 const CenterForm = (config = {}) => {
     const {
         center = null,
+        centerTypes = [],
         onSubmit = () => {},
         onCancel = () => {},
         onError = () => {}
@@ -132,6 +136,20 @@ const CenterForm = (config = {}) => {
         notes: center?.notes || ''
     };
 
+    // Build options for MultiSelect from centerTypes
+    const typeOptions = Array.isArray(centerTypes) && centerTypes.length > 0
+        ? centerTypes.map(type => ({ label: type.type_label, value: type.id }))
+        : [
+            { label: 'Cibo', value: '1' },
+            { label: 'Dormitorio', value: '2' },
+            { label: 'Housing', value: '3' },
+            { label: 'Psicologico', value: '4' },
+            { label: 'Collocamento lavorativo', value: '5' },
+            { label: 'Formazione', value: '6' },
+            { label: 'Abiti e altri beni', value: '7' },
+            { label: 'Trasporto', value: '8' }
+        ];
+
     // Form fields
     const nameInput = Input({
         type: 'text',
@@ -144,16 +162,7 @@ const CenterForm = (config = {}) => {
     const typeSelect = MultiSelect({
         id: 'type',
         value: formData.type,
-        options: [
-            'Cibo',
-            'Dormitorio',
-            'Housing',
-            'Psicologico',
-            'Collocamento lavorativo',
-            'Formazione',
-            'Abiti e altri beni',
-            'Trasporto'
-        ],
+        options: typeOptions,
         onChange: (value) => { formData.type = value; }
     });
 

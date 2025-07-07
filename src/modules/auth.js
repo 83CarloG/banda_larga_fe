@@ -169,6 +169,34 @@ const initializeAuth = () => {
     }
 };
 
+/**
+ * Refreshes the authentication token by calling the backend API
+ * @returns {Promise<AuthState>} - The new auth state
+ * @throws {Error} If refresh fails
+ */
+const refreshToken = async () => {
+    const token = getToken();
+    if (!token) throw new Error('No token available for refresh');
+
+    const response = await fetch('https://dacosta-vm.nubilaria.corp/banda_larga_backend/api/refresh-token', {
+        method: 'POST',
+        headers: {
+            'Authorization': token,
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+        }
+    });
+
+    if (!response.ok) {
+        clearAuth();
+        throw new Error('Failed to refresh token');
+    }
+
+    const data = await response.json();
+    setAuthFromResponse({ data });
+    return getAuthState();
+};
+
 // Initialize auth state when module loads
 initializeAuth();
 
@@ -180,5 +208,6 @@ module.exports = {
     isAuthenticated,
     getToken,
     getUser,
-    clearAuth
+    clearAuth,
+    refreshToken
 };

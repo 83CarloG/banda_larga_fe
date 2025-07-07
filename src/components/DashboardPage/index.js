@@ -1,6 +1,7 @@
 // components/DashboardPage/index.js
 "use strict";
 
+// require('./DashboardPage.css'); // No longer needed, styles are injected via JS
 const StatefulComponent = require('../base/StateFullComponent');
 const auth = require('../../modules/auth');
 const DashboardStats = require('./dashboardStats');

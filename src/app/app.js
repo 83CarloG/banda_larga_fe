@@ -2,7 +2,7 @@
 "use strict";
 
 // Import our main CSS
-import '../styles/main.css';
+require('../styles/main.css');
 
 const router = require('../modules/router');
 const { routes, hasRouteAccess } = require('./routes');

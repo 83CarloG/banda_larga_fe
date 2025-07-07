@@ -30,14 +30,22 @@ const extractResponseData = response => response.data;
 /**
  * Error response handler
  */
-const handleResponseError = error => {
-    const { status, data } = error.response || {};
+const handleResponseError = async error => {
+    const { status, data, config } = error.response || {};
 
     const errorMap = {
-        [HTTP_STATUS.UNAUTHORIZED]: () => {
-            auth.clearAuth();
-            router.navigate('/');
-            throw new Error('Session expired. Please log in again.');
+        [HTTP_STATUS.UNAUTHORIZED]: async () => {
+            try {
+                await auth.refreshToken();
+                // Retry the original request with the new token
+                const axios = require('axios');
+                config.headers = createHeaders(auth.getToken());
+                return axios.request(config).then(extractResponseData);
+            } catch (refreshError) {
+                auth.clearAuth();
+                router.navigate('/');
+                throw new Error('Session expired. Please log in again.');
+            }
         },
         [HTTP_STATUS.FORBIDDEN]: () => {
             throw new Error('You do not have permission to perform this action.');
@@ -72,6 +80,7 @@ const createAxiosInstance = () => {
         error => Promise.reject(error)
     );
 
+    // Use async error handler
     instance.interceptors.response.use(
         extractResponseData,
         handleResponseError
@@ -165,6 +174,27 @@ const createApiMethods = (instance) => ({
 
     deleteUser: withErrorHandling(async (userId) =>
         instance.delete(`/users/${userId}`)
+    ),
+
+    // Centers endpoints
+    getCenters: withErrorHandling(async () =>
+        instance.get('/centers')
+    ),
+
+    getCenter: withErrorHandling(async (centerId) =>
+        instance.get(`/centers/${centerId}`)
+    ),
+
+    createCenter: withErrorHandling(async (centerData) =>
+        instance.post('/centers', centerData)
+    ),
+
+    updateCenter: withErrorHandling(async (centerId, centerData) =>
+        instance.put(`/centers/${centerId}`, centerData)
+    ),
+
+    deleteCenter: withErrorHandling(async (centerId) =>
+        instance.delete(`/centers/${centerId}`)
     )
 });
 

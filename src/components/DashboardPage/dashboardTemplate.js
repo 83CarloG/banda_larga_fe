@@ -2,7 +2,7 @@
 "use strict";
 
 const { sanitize } = require('../../utils/security');
-const styles = require('./dashboardStyles');
+const dashboardPageStyles = require('./dashboardStyles');
 
 /**
  * Creates the dashboard page template
@@ -14,7 +14,7 @@ const createDashboardTemplate = (state, canViewAdvanced) => {
     const { isLoading, error } = state;
 
     return `
-        <style>${styles()}</style>
+        <style>${dashboardPageStyles}</style>
         <div class="container">
             <header-element></header-element>
             <sidebar-element></sidebar-element>

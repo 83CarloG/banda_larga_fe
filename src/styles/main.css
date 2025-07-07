@@ -1,66 +1,19 @@
 /* src/styles/main.css */
 
-/* Import our fonts stylesheet */
+@import './variables.css';
 @import './fonts.css';
+/* @import './self-hosted-fonts.css'; */
+@import './utilities.css';
+@import './buttons.css';
+@import './cards.css';
 
-/* Global styles */
-:root {
-    /* Colors (keep existing color variables) */
-    --primary-color: #406B7E;
-    --secondary-color: #D36D48;
-    --danger-color: #dc3545;
-    --warning-color: #ffc107;
-    --success-color: #16a34a;
-    --info-color: #0dcaf0;
-    --text-color: #1e293b;
-    --text-secondary: #64748b;
-    --border-color: #e2e8f0;
-    --background-light: #f8fafc;
-
-    /* Spacing */
-    --spacing-unit: 0.5rem;
-
-    /* Layout */
-    --header-height: 60px;
-    --footer-height: 64px;
-    --sidebar-width: 160px;
-
-    /* Font sizes */
-    --font-size-xs: 1rem;      /* 16px - minimum size for small text */
-    --font-size-sm: 1rem;      /* 16px - minimum size for regular text */
-    --font-size-base: 1rem;    /* 16px - unchanged */
-    --font-size-lg: 1.125rem;  /* 18px - unchanged */
-    --font-size-xl: 1.25rem;   /* 20px - minimum size for titles */
-    --font-size-2xl: 1.5rem;   /* 24px - unchanged */
-    --font-size-3xl: 1.875rem; /* 30px - unchanged */
-
-    /* Border radius */
-    --border-radius-sm: 0.25rem;
-    --border-radius-md: 0.5rem;
-    --border-radius-lg: 0.75rem;
-    --border-radius-xl: 1rem;
-
-    /* Box shadow */
-    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-}
-
-/* Reset and base styles */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
+/* Global resets and base styles */
 body {
-    font-family: var(--font-family);
-    font-size: var(--font-size-base);
-    line-height: 1.5;
-    color: var(--text-color);
-    background-color: var(--background-light);
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
+  font-family: 'Poppins', Arial, sans-serif;
+  color: var(--text-color);
+  background: var(--background-light);
+  margin: 0;
+  padding: 0;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -73,11 +26,9 @@ h1, h2, h3, h4, h5, h6 {
 h1 {
     font-size: var(--font-size-3xl);
 }
-
 h2 {
     font-size: var(--font-size-2xl);
 }
-
 h3 {
     font-size: var(--font-size-xl);
 }
@@ -86,7 +37,6 @@ a {
     color: var(--primary-color);
     text-decoration: none;
 }
-
 a:hover {
     text-decoration: underline;
 }
@@ -107,23 +57,18 @@ button, input, select, textarea {
 .text-center {
     text-align: center;
 }
-
 .mb-1 {
     margin-bottom: var(--spacing-unit);
 }
-
 .mb-2 {
     margin-bottom: calc(var(--spacing-unit) * 2);
 }
-
 .mt-1 {
     margin-top: var(--spacing-unit);
 }
-
 .mt-2 {
     margin-top: calc(var(--spacing-unit) * 2);
 }
-
 .visually-hidden {
     position: absolute;
     width: 1px;

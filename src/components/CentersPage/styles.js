@@ -1,6 +1,6 @@
 "use strict";
 
-const styles = () => `
+const centersPageStyles = `
     :host {
         --primary-color: #406B7E;
         --success-color: #16a34a;
@@ -600,4 +600,4 @@ const styles = () => `
         }
     }`;
 
-module.exports = styles;
+module.exports = centersPageStyles;
