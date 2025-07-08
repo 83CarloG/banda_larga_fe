@@ -19,7 +19,7 @@ const MultiSelect = (config = {}) => {
         values = [],
         required = false,
         disabled = false,
-        placeholder = 'Select options',
+        placeholder = 'Seleziona opzioni',
         onChange = () => {}
     } = config;
 
@@ -84,7 +84,7 @@ const MultiSelect = (config = {}) => {
 
         if (selectedValues.length === 0) {
             const placeholder = document.createElement('span');
-            placeholder.textContent = 'Select options';
+            placeholder.textContent = 'Seleziona opzioni';
             placeholder.style.color = '#64748b';
             selectedContainer.appendChild(placeholder);
             return;
