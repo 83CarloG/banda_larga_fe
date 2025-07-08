@@ -8,10 +8,20 @@ const centersGridStyles = require('./centersGridStyles');
  * Creates a center card component with improved email visibility
  */
 const CenterCard = (center, centerTypes = [], callbacks = {}) => {
-    // Helper to get type label from ID
+    // Mappatura id -> label italiana
+    const typeLabelMap = {
+        '1': 'Cibo',
+        '2': 'Dormitorio',
+        '3': 'Alloggio',
+        '4': 'Psicologico',
+        '5': 'Lavoro',
+        '6': 'Formazione',
+        '7': 'Trasporto',
+        '8': 'Altro'
+    };
+    // Helper per ottenere la label italiana dal type id
     function getTypeLabel(typeId) {
-        const found = centerTypes.find(t => t.id == typeId || t.type_name == typeId);
-        return found ? found.type_label : typeId;
+        return typeLabelMap[String(typeId)] || typeId;
     }
     // Center card container
     const card = document.createElement('div');
@@ -34,7 +44,7 @@ const CenterCard = (center, centerTypes = [], callbacks = {}) => {
 
     const statusText = document.createElement('span');
     statusText.className = 'status-text';
-    statusText.textContent = center.active ? 'Active' : 'Inactive';
+    statusText.textContent = center.active ? 'Attivo' : 'Non attivo';
 
     statusContainer.appendChild(statusIndicator);
     statusContainer.appendChild(statusText);
@@ -115,9 +125,9 @@ const CenterCard = (center, centerTypes = [], callbacks = {}) => {
     infoSection.className = 'info-section';
 
     const infoRows = [
-        { label: 'Director', value: center.director },
-        { label: 'Address', value: center.address },
-        { label: 'Open Since', value: formatDate(center.openDate) }
+        { label: 'Responsabile', value: center.director },
+        { label: 'Indirizzo', value: center.address },
+        { label: 'Apertura', value: formatDate(center.openDate) }
     ];
 
     infoRows.forEach(info => {
@@ -148,7 +158,7 @@ const CenterCard = (center, centerTypes = [], callbacks = {}) => {
 
         const missionLabel = document.createElement('span');
         missionLabel.className = 'mission-label';
-        missionLabel.textContent = 'Mission:';
+        missionLabel.textContent = 'Missione:';
 
         const missionValue = document.createElement('p');
         missionValue.className = 'mission-value';

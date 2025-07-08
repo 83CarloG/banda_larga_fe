@@ -108,10 +108,18 @@ const api = require('../../modules/api');
 // Helper to map backend center to frontend model
 function mapCenter(center) {
     if (!center) return null;
+    // Ensure type is always an array of string IDs
+    let typeArr = [];
+    if (Array.isArray(center.center_types)) {
+        typeArr = center.center_types.map(t => {
+            if (typeof t === 'object' && t.id) return String(t.id);
+            return String(t);
+        });
+    }
     return {
         id: center.id,
         name: center.center_name,
-        type: center.center_types || [],
+        type: typeArr,
         openDate: center.center_opening_date,
         mission: center.center_description,
         fiscalCode: center.center_vat,

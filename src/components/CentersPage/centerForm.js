@@ -22,25 +22,13 @@ const MultiSelect = (config = {}) => {
     const container = document.createElement('div');
     container.className = 'multi-select-container';
 
-    // Label
-    const label = document.createElement('label');
-    label.htmlFor = id;
-    label.className = 'multi-label';
-    label.textContent = 'Center Types';
-    const requiredSpan = document.createElement('span');
-    requiredSpan.className = 'required';
-    requiredSpan.textContent = ' *';
-    requiredSpan.style.color = 'var(--danger-color)';
-    label.appendChild(requiredSpan);
-    container.appendChild(label);
-
     // Options container
     const optionsContainer = document.createElement('div');
     optionsContainer.className = 'multi-select-options';
 
     // Track selected values (array of values)
     let selectedValues = Array.isArray(value) ? [...value] : [];
-
+    console.log(options)
     // Create checkboxes for each option
     options.forEach(optionObj => {
         const option = typeof optionObj === 'object' ? optionObj.value : optionObj;
@@ -136,18 +124,38 @@ const CenterForm = (config = {}) => {
         notes: center?.notes || ''
     };
 
+    // In CenterForm, ensure formData.type is always an array of string IDs
+    formData.type = Array.isArray(formData.type)
+        ? formData.type.map(t => (typeof t === 'object' ? String(t.value || t.id) : String(t)))
+        : [];
+
+    // Mappatura id -> label italiana
+    const typeLabelMap = {
+        '1': 'Cibo',
+        '2': 'Dormitorio',
+        '3': 'Alloggio',
+        '4': 'Psicologico',
+        '5': 'Lavoro',
+        '6': 'Formazione',
+        '7': 'Trasporto',
+        '8': 'Altro'
+    };
+
     // Build options for MultiSelect from centerTypes
     const typeOptions = Array.isArray(centerTypes) && centerTypes.length > 0
-        ? centerTypes.map(type => ({ label: type.type_label, value: type.id }))
+        ? centerTypes.map(type => ({
+            label: typeLabelMap[String(type.id)] || type.type_label,
+            value: String(type.id)
+        }))
         : [
             { label: 'Cibo', value: '1' },
             { label: 'Dormitorio', value: '2' },
-            { label: 'Housing', value: '3' },
+            { label: 'Alloggio', value: '3' },
             { label: 'Psicologico', value: '4' },
-            { label: 'Collocamento lavorativo', value: '5' },
+            { label: 'Lavoro', value: '5' },
             { label: 'Formazione', value: '6' },
-            { label: 'Abiti e altri beni', value: '7' },
-            { label: 'Trasporto', value: '8' }
+            { label: 'Trasporto', value: '7' },
+            { label: 'Altro', value: '8' }
         ];
 
     // Form fields
@@ -249,7 +257,7 @@ const CenterForm = (config = {}) => {
 
     const activeCheckbox = Checkbox({
         id: 'active',
-        label: 'Active Status',
+        label: 'Attivo',
         checked: formData.active,
         onChange: (value) => { formData.active = value; }
     });
@@ -263,56 +271,56 @@ const CenterForm = (config = {}) => {
 
     // Form groups
     const nameGroup = FormGroup({
-        label: 'Center Name',
+        label: 'Nome Centro',
         for: 'name',
         component: nameInput,
         required: true
     });
 
     const typeGroup = FormGroup({
-        label: 'Center Types',
+        label: 'Tipologie Centro',
         for: 'type',
         component: typeSelect,
         required: true
     });
 
     const openDateGroup = FormGroup({
-        label: 'Opening Date',
+        label: 'Data Apertura',
         for: 'openDate',
         component: openDateInput,
         required: true
     });
 
     const missionGroup = FormGroup({
-        label: 'Mission/Description',
+        label: 'Missione/Descrizione',
         for: 'mission',
         component: missionTextarea,
         required: true
     });
 
     const fiscalCodeGroup = FormGroup({
-        label: 'Fiscal Code/VAT Number',
+        label: 'Codice Fiscale/P.IVA',
         for: 'fiscalCode',
         component: fiscalCodeInput,
         required: true
     });
 
     const directorGroup = FormGroup({
-        label: 'Director/Manager',
+        label: 'Responsabile',
         for: 'director',
         component: directorInput,
         required: true
     });
 
     const addressGroup = FormGroup({
-        label: 'Address',
+        label: 'Indirizzo',
         for: 'address',
         component: addressInput,
         required: true
     });
 
     const phoneGroup = FormGroup({
-        label: 'Phone Number',
+        label: 'Telefono',
         for: 'phone',
         component: phoneInput,
         required: true
@@ -326,7 +334,7 @@ const CenterForm = (config = {}) => {
     });
 
     const notesGroup = FormGroup({
-        label: 'Additional Notes',
+        label: 'Note aggiuntive',
         for: 'notes',
         component: notesTextarea,
         required: false
@@ -395,12 +403,35 @@ const CenterForm = (config = {}) => {
             return;
         }
 
+        // Ensure formData.type is an array of IDs (strings or numbers)
+        formData.type = Array.isArray(formData.type)
+            ? formData.type.map(t => (typeof t === 'object' ? t.value || t.id : t))
+            : [];
+        // Map to API field
+        formData.center_types = formData.type;
+        delete formData.type;
+
+        // Build payload for API with correct field names
+        const payload = {
+            center_name: formData.name,
+            center_types: formData.center_types,
+            center_opening_date: formData.openDate,
+            center_description: formData.mission,
+            center_vat: formData.fiscalCode,
+            center_responsible: formData.director,
+            center_address: formData.address,
+            center_phone_number: formData.phone,
+            center_email: formData.email,
+            center_note: formData.notes,
+            active: formData.active
+        };
+
         try {
             let response;
             if (center && center.id) {
-                response = await centerService.updateCenter(center.id, formData);
+                response = await centerService.updateCenter(center.id, payload);
             } else {
-                response = await centerService.createCenter(formData);
+                response = await centerService.createCenter(payload);
             }
 
             onSubmit(response);
@@ -413,14 +444,14 @@ const CenterForm = (config = {}) => {
 
     // Add submit and cancel buttons
     const submitButton = Button({
-        text: center && center.id ? 'Save Changes' : 'Add Center',
+        text: center && center.id ? 'Salva modifiche' : 'Aggiungi centro',
         type: 'submit',
         variant: 'primary',
         onClick: handleSubmit
     });
 
     const cancelButton = Button({
-        text: 'Cancel',
+        text: 'Annulla',
         type: 'button',
         variant: 'cancel',
         onClick: () => onCancel()
