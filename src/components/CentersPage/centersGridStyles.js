@@ -44,7 +44,7 @@ const centersGridStyles = `
     --warning-color: #ca8a04;
     --text-color: #1e293b;
     --border-color: #e2e8f0;
-    --background-light: #f8fafc;
+    --background-light: #fff;
     --spacing-unit: 0.5rem;
     font-family: 'Poppins', system-ui, sans-serif;
     background: white;

@@ -47,18 +47,8 @@ h2 {
     flex: 1;
     display: flex;
     flex-direction: column;
-    width: calc(100% - var(--sidebar-width));
-    min-height: calc(100vh - var(--header-height));
-    padding-bottom: var(--footer-height);
-}
-.main-content {
-    flex: 1;
-    padding: 24px 0;
-    margin: 0 auto;
-    width: 100%;
-    box-sizing: border-box;
-    margin-top: var(--header-height);
-    margin-bottom: var(--footer-height);
+    min-height: 0;
+    /* Remove margin-bottom and padding-bottom for .main-content */
 }
 .stats-container {
     display: grid;

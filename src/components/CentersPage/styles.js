@@ -16,10 +16,9 @@ const centersPageStyles = `
 
     .dashboard-container {
         width: 100%;
-        height: 100vh;
         display: flex;
         flex-direction: column;
-        overflow: hidden;
+        /* height and overflow removed to allow scrolling */
     }
 
     .content-wrapper {
@@ -28,9 +27,6 @@ const centersPageStyles = `
         display: flex;
         flex-direction: column;
         width: calc(100% - var(--sidebar-width));
-        height: calc(100vh - var(--header-height));
-        position: relative;
-        overflow: hidden;
     }
 
     .main-content {
@@ -41,13 +37,6 @@ const centersPageStyles = `
         box-sizing: border-box;
         margin-top: var(--header-height);
         padding-bottom: var(--footer-height);
-        overflow-y: auto;
-        height: 100%;
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
     }
 
     .header {
@@ -59,7 +48,7 @@ const centersPageStyles = `
         padding-bottom: 1rem;
         border-bottom: 2px solid var(--border-color);
         top: 0;
-        background: var(--background-light);
+        background: #fff;
         z-index: 10;
     }
 

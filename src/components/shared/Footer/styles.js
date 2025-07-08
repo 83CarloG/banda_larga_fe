@@ -13,15 +13,14 @@ const styles = () => `
         border-top: 1px solid #dddfe2;
         padding: 0 16px;
         height: var(--footer-height);
-        position: fixed;
-        bottom: 0;
-        left: var(--sidebar-width); /* Start from where sidebar ends */
-        right: 0;
-        width: calc(100% - var(--sidebar-width)); /* Adjust width to exclude sidebar */
+        width: 100%;           /* Use normal content width */
+        left: 0;               /* Start at the very left */
+        position: relative;    /* Static or relative, not fixed */
         z-index: 98;
         box-sizing: border-box;
         display: flex;
         align-items: center;
+        box-shadow: -1px 0 0 0 #dddfe2; /* Visually connect with sidebar */
     }
 
     .footer-content {
@@ -59,12 +58,14 @@ const styles = () => `
     }
 
     @media (max-width: 1024px) {
+        .footer {
+            width: 100%;
+        }
         .footer-content {
             flex-direction: column;
             gap: 16px; /* Increased gap for better spacing in column layout */
             padding: 16px 0;
         }
-
         .footer {
             height: auto;
             min-height: var(--footer-height);

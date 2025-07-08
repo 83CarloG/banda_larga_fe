@@ -15,7 +15,6 @@ const createPageTemplate = (state) => {
     return `
         <style>${centersPageStyles}</style>
         <div class="dashboard-container">
-            <header-element></header-element>
             <sidebar-element></sidebar-element>
             
             <div class="content-wrapper">
@@ -40,7 +39,6 @@ const createPageTemplate = (state) => {
                 </div>
             </div>
         </div>
-        <footer-element></footer-element>
     `;
 };
 

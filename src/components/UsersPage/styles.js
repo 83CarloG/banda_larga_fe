@@ -7,7 +7,7 @@ const styles = () => `
         --danger-color: #dc2626;
         --text-color: #1e293b;
         --border-color: #e2e8f0;
-        --background-light: #f8fafc;
+        --background-light: #fff;
         --spacing-unit: 0.5rem;
         display: block;
         font-family: 'Poppins', system-ui, sans-serif;
@@ -15,10 +15,9 @@ const styles = () => `
 
     .dashboard-container {
         width: 100%;
-        height: 100vh;
         display: flex;
         flex-direction: column;
-        overflow: hidden;
+        /* height and overflow removed to allow scrolling */
     }
 
     .content-wrapper {
@@ -27,9 +26,6 @@ const styles = () => `
         display: flex;
         flex-direction: column;
         width: calc(100% - var(--sidebar-width));
-        height: calc(100vh - var(--header-height));
-        position: relative;
-        overflow: hidden;
     }
 
     .main-content {
@@ -39,14 +35,7 @@ const styles = () => `
         width: 100%;
         box-sizing: border-box;
         margin-top: var(--header-height);
-        padding-bottom: var(--footer-height);
-        overflow-y: auto;
-        height: 100%;
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
+        /* Ensure no padding-bottom override here; global main.css will apply it */
     }
 
     .header {
@@ -58,7 +47,7 @@ const styles = () => `
         padding-bottom: 1rem;
         border-bottom: 2px solid var(--border-color);
         top: 0;
-        background: var(--background-light);
+        background: #fff;
         z-index: 10;
     }
 
@@ -70,7 +59,7 @@ const styles = () => `
     }
 
     .badge {
-        background: var(--background-light);
+        background: #fff;
         color: var(--text-color);
         padding: 0.25rem 0.75rem;
         border-radius: 1rem;
@@ -222,7 +211,7 @@ const styles = () => `
     }
     
     .cancel-btn:hover:not(:disabled) {
-        background-color: var(--background-light);
+        background-color: #fff;
     }
     
     .cancel-btn:disabled {
@@ -254,6 +243,7 @@ const styles = () => `
         border: 1px solid var(--border-color);
         background: white;
         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        margin-bottom: 2.5rem; /* Extra safety margin for table */
     }
 
     .users-table {
@@ -271,7 +261,7 @@ const styles = () => `
     }
 
     .users-table th {
-        background: var(--background-light);
+        background: #fff;
         font-weight: 600;
         font-size: 1rem;
         text-transform: uppercase;
@@ -313,7 +303,7 @@ const styles = () => `
     }
 
     .icon-btn:hover:not(:disabled) {
-        background: var(--background-light);
+        background: #fff;
         color: var(--primary-color);
     }
 
@@ -435,7 +425,7 @@ const styles = () => `
     }
     
     .selected-chip {
-        background-color: var(--background-light);
+        background-color: #fff;
         padding: 0.25rem 0.5rem;
         border-radius: 0.25rem;
         font-size: 1rem;
@@ -459,7 +449,11 @@ const styles = () => `
     }
     
     .dropdown-item:hover {
-        background-color: var(--background-light);
+        background-color: #fff;
+    }
+
+    #table-container {
+        margin-bottom: 3.5rem; /* Ensure enough space above the fixed footer */
     }
 
     @media (max-width: 768px) {

@@ -15,26 +15,21 @@ const createDashboardTemplate = (state, canViewAdvanced) => {
 
     return `
         <style>${dashboardPageStyles}</style>
-        <div class="container">
-            <header-element></header-element>
+        <div class="dashboard-root">
             <sidebar-element></sidebar-element>
-            
-            <div class="content-wrapper">
-                <div class="main-content">
-                    <div class="dashboard-header">
-                        <h2>Home</h2>
-                      
-                    </div>
-                    
-                    ${error ? createErrorBanner(error) : ''}
-                    
-                    <div id="stats-container" class="stats-container"></div>
-                    
-                    ${canViewAdvanced
+            <div class="dashboard-main">
+                <div class="content-wrapper">
+                    <div class="main-content">
+                        <div class="dashboard-header">
+                            <h2>Home</h2>
+                        </div>
+                        ${error ? createErrorBanner(error) : ''}
+                        <div id="stats-container" class="stats-container"></div>
+                        ${canViewAdvanced
         ? '<div id="charts-container" class="charts-container"></div>'
         : '<div class="limited-access-notice">Some dashboard features are only available to supervisors and administrators.</div>'}
+                    </div>
                 </div>
-                <footer-element></footer-element>
             </div>
         </div>
     `;

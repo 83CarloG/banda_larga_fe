@@ -37,6 +37,17 @@ const initializeRoutes = () => {
 };
 
 /**
+ * Controls visibility of header/footer based on route and auth state
+ */
+const updateHeaderFooterVisibility = () => {
+    const header = document.querySelector('header-element');
+    const footer = document.querySelector('footer-element');
+    const isLoginPage = window.location.pathname === '/';
+    if (header) header.style.display = isLoginPage ? 'none' : '';
+    if (footer) footer.style.display = isLoginPage ? 'none' : '';
+};
+
+/**
  * Initializes application event listeners
  */
 const initializeEventListeners = () => {
@@ -46,15 +57,27 @@ const initializeEventListeners = () => {
         if (authState.user) {
             router.navigate('/dashboard');
         }
+        updateHeaderFooterVisibility();
     });
 
     window.addEventListener('auth:logout', () => {
         router.navigate('/');
+        updateHeaderFooterVisibility();
     });
 
     // Handle route changes
     window.addEventListener('DOMContentLoaded', () => {
         router.init();
+        updateHeaderFooterVisibility();
+    });
+
+    window.addEventListener('popstate', () => {
+        updateHeaderFooterVisibility();
+    });
+
+    // Optionally, listen for custom navigation events if used
+    window.addEventListener('route:change', () => {
+        updateHeaderFooterVisibility();
     });
 };
 
@@ -69,5 +92,12 @@ const initializeApp = () => {
 
 // Start the application
 initializeApp();
+
+// After every navigation, also update header/footer visibility
+const originalNavigate = router.navigate;
+router.navigate = function(pathname) {
+    originalNavigate.call(router, pathname);
+    updateHeaderFooterVisibility();
+};
 
 module.exports = { initializeApp };

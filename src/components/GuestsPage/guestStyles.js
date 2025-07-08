@@ -17,10 +17,9 @@ const styles = () => `
 
     .dashboard-container {
         width: 100%;
-        height: 100vh;
         display: flex;
         flex-direction: column;
-        overflow: hidden;
+        /* height and overflow removed to allow scrolling */
     }
 
     .content-wrapper {
@@ -29,9 +28,6 @@ const styles = () => `
         display: flex;
         flex-direction: column;
         width: calc(100% - var(--sidebar-width));
-        height: calc(100vh - var(--header-height));
-        position: relative;
-        overflow: hidden;
     }
 
     .main-content {
@@ -41,14 +37,6 @@ const styles = () => `
         width: 100%;
         box-sizing: border-box;
         margin-top: var(--header-height);
-        padding-bottom: var(--footer-height);
-        overflow-y: auto;
-        height: 100%;
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
     }
 
     .container {
@@ -67,7 +55,7 @@ const styles = () => `
         padding-bottom: 1rem;
         border-bottom: 2px solid var(--border-color);
         top: 0;
-        background: var(--background-light);
+        background: #fff;
         z-index: 10;
     }
 
@@ -79,7 +67,7 @@ const styles = () => `
     }
 
     .badge {
-        background: var(--background-light);
+        background: #fff;
         color: var(--text-color);
         padding: 0.25rem 0.75rem;
         border-radius: 1rem;
@@ -131,7 +119,7 @@ const styles = () => `
     }
     
     .secondary-btn:hover:not(:disabled) {
-        background-color: var(--background-light);
+        background-color: #fff;
     }
     
     .cancel-btn {
@@ -149,7 +137,7 @@ const styles = () => `
     }
     
     .cancel-btn:hover:not(:disabled) {
-        background-color: var(--background-light);
+        background-color: #fff;
     }
     
     .cancel-btn:disabled {
@@ -260,7 +248,7 @@ const styles = () => `
 }
 
 .result-item:hover {
-    background-color: var(--background-light);
+    background-color: #fff;
 }
 
 .guest-header {
@@ -322,7 +310,7 @@ const styles = () => `
     }
 
     .guests-table th {
-        background: var(--background-light);
+        background: #fff;
         font-weight: 600;
         font-size: 1rem;
         text-transform: uppercase;
@@ -364,7 +352,7 @@ const styles = () => `
     }
 
     .icon-btn:hover:not(:disabled) {
-        background: var(--background-light);
+        background: #fff;
         color: var(--primary-color);
     }
 
@@ -463,7 +451,7 @@ const styles = () => `
     }
     
     .form-step:hover {
-        background-color: var(--background-light);
+        background-color: #fff;
         border-color: var(--border-color);
     }
     
@@ -473,7 +461,7 @@ const styles = () => `
     }
     
     .form-step.completed {
-        background: var(--background-light);
+        background: #fff;
         color: var(--success-color);
     }
     
@@ -537,7 +525,7 @@ const styles = () => `
         display: flex;
         justify-content: space-between;
         align-items: center;
-        background-color: var(--background-light);
+        background-color: #fff;
         border-bottom: 1px solid var(--border-color);
     }
     
@@ -564,7 +552,7 @@ const styles = () => `
     .guest-tabs {
         display: flex;
         border-bottom: 1px solid var(--border-color);
-        background-color: var(--background-light);
+        background-color: #fff;
         overflow-x: auto;
     }
     
@@ -615,7 +603,7 @@ const styles = () => `
     .guest-right-panel {
         width: 50%;
         overflow-y: auto;
-        background-color: var(--background-light);
+        background-color: #fff;
         display: flex;
         flex-direction: column;
     }
