@@ -63,7 +63,9 @@ const routes = [
     createRoute('/reports', () => document.createElement('reports-page'), {
         requiresAuth: true,
         requiredPermissions: ['view_reports']
-    })
+    }),
+
+    createRoute('/recovery', () => document.createElement('recovery-page')),
 ];
 
 module.exports = {

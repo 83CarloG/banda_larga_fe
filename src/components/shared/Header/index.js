@@ -64,6 +64,12 @@ class HeaderElement extends HTMLElement {
 
     connectedCallback() {
         const userData = auth.getAuthState().user;
+        if (!userData) {
+            this.style.display = 'none';
+            this.shadowRoot.innerHTML = '';
+            return;
+        }
+        this.style.display = '';
         this.shadowRoot.innerHTML = `
             <style>${styles()}</style>
             ${createTemplate(userData)}

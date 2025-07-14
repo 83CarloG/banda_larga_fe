@@ -96,6 +96,7 @@ const renderComponent = (route, container) => {
         }
 
         const component = componentFn(route.params);
+        console.log('router.renderComponent: appending', component);
         container.innerHTML = '';
         container.appendChild(component);
     } catch (error) {
@@ -109,6 +110,7 @@ const renderComponent = (route, container) => {
  * @param {string} pathname - URL pathname
  */
 const handleLocation = async pathname => {
+    console.log('router.handleLocation called with', pathname);
     const container = document.getElementById("app");
     if (!container) {
         console.error("Container with id 'app' not found!");
@@ -120,7 +122,8 @@ const handleLocation = async pathname => {
     const isAuthenticated = auth.isAuthenticated();
     const hasAccess = route?.config.accessCheck?.() ?? true;
 
-    if (!isAuthenticated && pathname !== '/') {
+    const publicRoutes = ['/', '/recovery'];
+    if (!isAuthenticated && !publicRoutes.includes(pathname)) {
         window.history.pushState({}, "", "/");
         const loginRoute = findRoute('/');
         if (loginRoute) {
@@ -167,6 +170,7 @@ const addRoute = (path, config) => {
  * @param {string} pathname - Target path
  */
 const navigate = pathname => {
+    console.log('router.navigate called with', pathname);
     if (window.location.pathname !== pathname) {
         window.history.pushState({}, "", pathname);
         handleLocation(pathname);

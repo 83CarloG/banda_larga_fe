@@ -61,7 +61,7 @@ class LoginPageElement extends HTMLElement {
         elements.form.addEventListener('submit', event => handleSubmit(event, elements));
         elements.recoverLink.addEventListener('click', (event) => {
             event.preventDefault();
-            alert('Password recovery feature coming soon. Please contact support.');
+            router.navigate('/recovery');
         });
     }
 }

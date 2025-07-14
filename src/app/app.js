@@ -13,6 +13,7 @@ const auth = require('../modules/auth');
  */
 const loadComponents = () => {
     require('../components/LoginPage');
+    require('../components/RecoveryPage');
     require('../components/DashboardPage');
     require('../components/UsersPage');
     require('../components/CentersPage');
@@ -43,8 +44,11 @@ const updateHeaderFooterVisibility = () => {
     const header = document.querySelector('header-element');
     const footer = document.querySelector('footer-element');
     const isLoginPage = window.location.pathname === '/';
-    if (header) header.style.display = isLoginPage ? 'none' : '';
-    if (footer) footer.style.display = isLoginPage ? 'none' : '';
+    const isAuthenticated = auth.isAuthenticated && auth.isAuthenticated();
+    // Show header/footer only if not on login page and user is authenticated
+    const shouldShow = !isLoginPage && isAuthenticated;
+    if (header) header.style.display = shouldShow ? '' : 'none';
+    if (footer) footer.style.display = shouldShow ? '' : 'none';
 };
 
 /**

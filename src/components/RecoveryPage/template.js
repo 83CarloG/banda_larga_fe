@@ -7,19 +7,15 @@ const createTemplate = () => `
                 <img src="${logoImage}" alt="Banda Larga" />
             </div>
         </div>
-        <form id="loginForm">
+        <form id="recoveryForm">
             <div class="form-group">
                 <label for="email">Email:</label>
                 <input type="email" id="email" required autocomplete="email" />
             </div>
-            <div class="form-group">
-                <label for="password">Password:</label>
-                <input type="password" id="password" required autocomplete="current-password" />
-            </div>
-            <button type="submit">Login</button>
+            <button type="submit">Invia link di recupero</button>
         </form>
-        <a id="recoverEmailLink" href="/recovery" class="recovery-link">Password dimenticata</a>
-        <div id="error" class="error"></div>
+        <a id="backToLoginLink" href="#" class="recovery-link">Torna al login</a>
+        <div id="message" class="error"></div>
     </div>
 `;
 
