@@ -77,7 +77,7 @@ const UserForm = (config = {}) => {
     const roleSelect = Select({
         id: 'role_id',
         options: [
-            { value: '', label: 'Select a role' },
+            { value: '', label: 'Seleziona un ruolo' },
             { value: '1', label: 'Data Entry' },
             { value: '2', label: 'Supervisor' },
             { value: '3', label: 'Administrator' }
