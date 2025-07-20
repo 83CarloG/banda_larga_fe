@@ -680,12 +680,26 @@ const guestService = {
      */
     async fetchGuests() {
         try {
-            // Use mock data for now
-            // In production, uncomment the API call
-            // const response = await api.getGuests();
-            // return response.data.guests;
-
-            return Promise.resolve(MOCK_GUESTS);
+            // Call the real API
+            const response = await api.getGuests();
+            // The API returns { status, data: { guests: [...] } }
+            if (response.status === 'success' && response.data && Array.isArray(response.data.guests)) {
+                // Map API fields to internal fields expected by the UI
+                return response.data.guests.map(g => ({
+                    id: g.id,
+                    guest_code: g.code,
+                    guest_first_name: g.first_name,
+                    guest_last_name: g.last_name,
+                    guest_fiscal_code: g.fiscal_code,
+                    guest_phone_number: g.guest_phone_number,
+                    casa_residenza_indirizzo: g.residence_address,
+                    casa_residenza_comune: g.residence_city,
+                    casa_residenza_cap: g.residence_postal_code,
+                    active: g.status === 'active',
+                }));
+            } else {
+                throw new Error('Errore nel recupero degli ospiti');
+            }
         } catch (error) {
             console.error('Error fetching guests:', error);
             throw error;

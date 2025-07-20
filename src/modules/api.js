@@ -195,6 +195,11 @@ const createApiMethods = (instance) => ({
 
     deleteCenter: withErrorHandling(async (centerId) =>
         instance.delete(`/centers/${centerId}`)
+    ),
+
+    // Guests endpoints
+    getGuests: withErrorHandling(async () =>
+        instance.get('/guests')
     )
 });
 
