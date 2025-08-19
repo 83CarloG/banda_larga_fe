@@ -79,6 +79,11 @@ const setAuthFromResponse = (response) => {
         cookies.COOKIE_OPTIONS.AUTH
     );
 
+    // Notify listeners that a login occurred so UI can react
+    if (typeof window !== 'undefined' && window.dispatchEvent) {
+        window.dispatchEvent(new Event('auth:login'));
+    }
+
     return getAuthState();
 };
 

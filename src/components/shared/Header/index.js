@@ -63,6 +63,31 @@ class HeaderElement extends HTMLElement {
     }
 
     connectedCallback() {
+        // Persist handlers for proper cleanup
+        this._onLogin = () => {
+            const userData = auth.getAuthState().user;
+            if (!userData) return;
+            this.style.display = '';
+            if (!this.shadowRoot.innerHTML.trim()) {
+                this.shadowRoot.innerHTML = `
+            <style>${styles()}</style>
+            ${createTemplate(userData)}
+        `;
+                setupEventListeners(this.shadowRoot);
+            } else {
+                updateUserInfo(this.shadowRoot);
+            }
+        };
+
+        this._onLogout = () => {
+            this.style.display = 'none';
+            this.shadowRoot.innerHTML = '';
+        };
+
+        window.addEventListener('auth:login', this._onLogin);
+        window.addEventListener('auth:logout', this._onLogout);
+
+        // Initial render depending on current auth state
         const userData = auth.getAuthState().user;
         if (!userData) {
             this.style.display = 'none';
@@ -75,14 +100,16 @@ class HeaderElement extends HTMLElement {
             ${createTemplate(userData)}
         `;
         setupEventListeners(this.shadowRoot);
-
-        // Listen for auth state changes
-        window.addEventListener('auth:login', () => updateUserInfo(this.shadowRoot));
     }
 
     disconnectedCallback() {
         // Clean up event listeners
-        window.removeEventListener('auth:login', () => updateUserInfo(this.shadowRoot));
+        if (this._onLogin) {
+            window.removeEventListener('auth:login', this._onLogin);
+        }
+        if (this._onLogout) {
+            window.removeEventListener('auth:logout', this._onLogout);
+        }
     }
 }
 
